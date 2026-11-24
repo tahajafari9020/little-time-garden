@@ -123,6 +123,32 @@ html[data-theme="boy"] .calendar-detail:before{content:"🪁"}
 @media(max-width:480px){.card:before{right:9px;top:7px;font-size:14px}.calendar-detail:before{right:12px;top:40px;font-size:20px}.field:after{opacity:.22}}
 @media(prefers-reduced-motion:reduce){.card:before,.section-title:after,.calendar-detail:before,.page-stickers span{animation:none}}
 
+
+/* Strong, readable action buttons in the sky theme. Keep the existing shapes and layout. */
+html[data-theme="boy"] .btn,
+html[data-theme="boy"] .btn.soft,
+html[data-theme="boy"] .btn.ghost,
+html[data-theme="boy"] label.btn {
+  background: #426f91 !important;
+  color: #ffffff !important;
+  border: 1px solid #426f91 !important;
+  text-shadow: 0 1px 1px #294c68;
+}
+html[data-theme="boy"] .btn:hover,
+html[data-theme="boy"] label.btn:hover {
+  background: #365f7f !important;
+  border-color: #365f7f !important;
+}
+/* Disabled actions stay visibly blue so their white labels remain readable. */
+html[data-theme="boy"] .btn:disabled,
+html[data-theme="boy"] label.btn[aria-disabled="true"] {
+  opacity: 1 !important;
+  background: #6689a6 !important;
+  border-color: #6689a6 !important;
+  color: #ffffff !important;
+  cursor: not-allowed;
+  text-shadow: 0 1px 1px #3e607c;
+}
 </style>
 </head>
 <body>

@@ -1,15 +1,19 @@
 # Little Time Garden
 
-A lightweight, offline-friendly time and study tracker.
+A lightweight, offline-friendly study-time tracker.
 
 ## Included
 - Stopwatch with pause/resume and session saving
 - Manual time entries
-- Study subjects and lessons with automatic totals
+- Subjects created in Study Garden and selected when tracking time
+- Per-subject time totals and session counts
 - Monthly calendar with daily detail
 - Daily, 7-day, and 30-day statistics
-- Activity history and filters
-- JSON backup and restore
+- History with subject filtering and confirmed deletion
+- JSON backup and restore from Settings
+- Two selectable themes: Flower Garden and Sky & Little Adventures
+- Full interface language selection: English or Persian, with right-to-left layout in Persian
+- Language preference saved separately from study records and backup data
 - Local-first storage; no account or server database
 
 ## Install on Android
@@ -17,8 +21,8 @@ This is a Progressive Web App. For the install prompt and offline support, serve
 
 Opening `index.html` directly as a file lets you test the app, but service-worker offline caching and PWA installation require HTTPS (or localhost).
 
-## Data and uninstalling
-The app stores records in browser local storage on the device. Removing the installed PWA may not remove all browser site data in every browser. To ensure the records are gone, clear the website's stored data in browser settings. Export a backup before changing phones, clearing browser data, or uninstalling.
+## Data and backups
+The app stores records, theme choice, and language choice in browser local storage on the device. A downloaded JSON backup is saved by the browser (usually in Downloads); it is not automatically sent to cloud storage. Restore imports the selected JSON file and replaces the current app data on that device. Export a backup before changing phones or clearing browser site data.
 
 ## Files
 - `index.html`: app

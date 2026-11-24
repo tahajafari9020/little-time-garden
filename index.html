@@ -31,6 +31,13 @@ html[data-theme="boy"] .day.today{border-color:#83b3d5;background:#f0f8ff}
 html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
 .sticker-row{display:flex;justify-content:center;gap:clamp(12px,4vw,28px);font-size:19px;padding:0 0 13px;opacity:.9;user-select:none}
 .sticker-row span{filter:drop-shadow(0 2px 2px #8e617018)}
+.page-stickers{display:flex;justify-content:center;align-items:center;gap:12px;min-height:42px;margin:15px 0 2px;opacity:.82;user-select:none;pointer-events:none}
+.page-stickers span{font-size:20px;letter-spacing:5px;filter:drop-shadow(0 2px 2px #8e617018);white-space:normal;text-align:center;line-height:1.9}
+.card{position:relative}
+.card:after{content:"✿";position:absolute;right:12px;bottom:7px;font-size:18px;opacity:.13;pointer-events:none}
+html[data-theme="boy"] .card:after{content:"★"}
+html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a18)}
+
 .settings-note{background:var(--pink2);border:1px dashed var(--pink);border-radius:14px;padding:11px 12px;font-size:12px;color:var(--ink);line-height:1.55}
 @media(min-width:620px){.app{padding-top:26px}.hero{padding:26px}.bigtime{font-size:48px}.day{min-height:65px}.grid2{gap:15px}}
 </style>
@@ -50,6 +57,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
  <div class="section-title">Today's activities <button class="btn ghost small" onclick="showView('history')">See history</button></div>
  <div class="list" id="todayList"></div>
  <div class="card"><div class="row between"><strong>Today's study bouquet</strong><span>💐</span></div><div id="studyBouquet" class="list" style="margin-top:10px"></div></div>
+
+ <div class="page-stickers" data-girl="🌷  🐈  🎀  🦋  🍓  🧁  🌼" data-boy="🧸  ⭐  🚀  🦕  ☁️  🪐  🐻" aria-hidden="true"><span>🌷  🐈  🎀  🦋  🍓  🧁  🌼</span></div>
 </section>
 
 <section class="view" id="track">
@@ -70,6 +79,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
   <div class="two"><div class="field"><label>Date</label><input id="manualDate" type="date"></div><div class="field"><label>Note (optional)</label><input id="manualNote" placeholder="A little detail"></div></div>
   <button class="btn" onclick="addManual()">Save session</button>
  </div>
+
+ <div class="page-stickers" data-girl="🐇  📝  🌸  🍰  🐾" data-boy="🚗  🛸  ⭐  🐢  🧩" aria-hidden="true"><span>🐇  📝  🌸  🍰  🐾</span></div>
 </section>
 
 <section class="view" id="study">
@@ -85,6 +96,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
   <button class="btn soft" onclick="addLesson()">＋ Add lesson</button>
  </div>
  <div class="section-title">Your subjects</div><div id="subjectsList" class="list"></div>
+
+ <div class="page-stickers" data-girl="📚  🌼  🐈  ✏️  🦋  🍓" data-boy="📚  🦖  ✏️  ⭐  🪐  🧸" aria-hidden="true"><span>📚  🌼  🐈  ✏️  🦋  🍓</span></div>
 </section>
 
 <section class="view" id="calendar">
@@ -95,6 +108,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
   <div class="tiny" style="margin-top:12px">✿ Days with tracked time are marked with a little flower.</div>
  </div>
  <div class="card calendar-detail" id="calendarDetail"></div>
+
+ <div class="page-stickers" data-girl="🌻  🐝  🌷  🐞  🍀" data-boy="☀️  ☁️  ⭐  🌙  🪁" aria-hidden="true"><span>🌻  🐝  🌷  🐞  🍀</span></div>
 </section>
 
 <section class="view" id="stats">
@@ -106,6 +121,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
  </div>
  <div class="card"><strong>Study by subject</strong><div id="subjectChart"></div></div>
  <div class="card"><strong>Daily totals</strong><div id="dailyChart"></div></div>
+
+ <div class="page-stickers" data-girl="✨  🌸  🐈  🎀  🌼" data-boy="⭐  🏆  🚀  🪐  🧸" aria-hidden="true"><span>✨  🌸  🐈  🎀  🌼</span></div>
 </section>
 
 <section class="view" id="history">
@@ -114,6 +131,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
   <div class="two"><div class="field"><label>Filter section</label><select id="historyFilter" onchange="renderHistory()"><option value="">All sections</option><option>Study</option><option>Personal</option><option>Work</option><option>Exercise</option><option>Leisure</option><option>Other</option></select></div><div class="field"><label>Search activity</label><input id="historySearch" placeholder="Search..." oninput="renderHistory()"></div></div>
   <div class="list" id="historyList"></div>
  </div>
+
+ <div class="page-stickers" data-girl="📖  🐇  🌷  🍄  🦋" data-boy="📖  🐻  🦕  ⭐  ☁️" aria-hidden="true"><span>📖  🐇  🌷  🍄  🦋</span></div>
 </section>
 
 <section class="view" id="settings">
@@ -122,6 +141,8 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
  <div class="card"><strong>🌼 Backup your little garden</strong><p class="subtle">Save a copy of your subjects, lessons, study sessions, activities, and timer so you can restore them later.</p><div class="actions"><button class="btn" onclick="exportData()">Download backup</button><label class="btn soft" for="importFile">Restore backup</label><input class="hidden" id="importFile" type="file" accept="application/json,.json" onchange="importData(event)"></div><div class="settings-note" style="margin-top:12px"><strong>Where does the backup go?</strong><br>When you download it, the JSON backup file is saved on that device—usually in the <strong>Downloads</strong> folder. It is not automatically uploaded to Google Drive or the internet. You can move it to Google Drive yourself if you want an extra copy.</div><p class="tiny">Restoring a backup replaces the current app data on this device. Export the current data first if you want to keep both copies.</p></div>
  <div class="card"><strong>Little garden care</strong><p class="subtle">You can remove a session from History, or clear all app data below.</p><button class="btn ghost" onclick="clearAll()">Clear all data</button></div>
  <div class="card"><strong>About this app</strong><p class="subtle">Little Time Garden · Offline-friendly time and study tracker.</p><p class="tiny">Tip: use your browser's “Add to Home screen” option to install it like an app. For offline installation, it must be hosted over HTTPS.</p></div>
+
+ <div class="page-stickers" data-girl="🧺  🌼  🎀  🐈  🌸" data-boy="🧸  🪐  🚀  ⭐  ☁️" aria-hidden="true"><span>🧺  🌼  🎀  🐈  🌸</span></div>
 </section>
 </div>
 <nav class="nav"><div class="navinner">
@@ -142,7 +163,7 @@ function iso(d){let x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth
 function load(){try{const raw=localStorage.getItem(DB);if(raw)data={...data,...JSON.parse(raw)}}catch(e){}}
 function save(){localStorage.setItem(DB,JSON.stringify(data))}
 const THEME_KEY='little-time-garden-theme-v1';
-function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span>';let sel=$('themeSelect');if(sel)sel.value=chosen}
+function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span>';document.querySelectorAll('.page-stickers').forEach(el=>{el.innerHTML='<span>'+(chosen==='boy'?el.dataset.boy:el.dataset.girl)+'</span>'});let sel=$('themeSelect');if(sel)sel.value=chosen}
 function loadTheme(){let t='girl';try{t=localStorage.getItem(THEME_KEY)||'girl'}catch(e){}setTheme(t)}
 function fmt(ms){let m=Math.floor(ms/60000),h=Math.floor(m/60);return `${h}h ${String(m%60).padStart(2,'0')}m`}
 function clock(ms){let s=Math.floor(ms/1000);return [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,'0')).join(':')}

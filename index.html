@@ -41,8 +41,10 @@ html[data-theme="boy"] .eyebrow{color:#6489a7}
 html[data-theme="boy"] .bigtime,html[data-theme="boy"] .timer{color:#456f91}
 html[data-theme="boy"] .stat .num,html[data-theme="boy"] .item .duration{color:#527b9c}
 html[data-theme="boy"] .btn{background:var(--rose)}
-html[data-theme="boy"] .btn.soft{background:var(--pink2);color:var(--rose)}
-html[data-theme="boy"] .btn.ghost{color:var(--rose);border-color:var(--line)}
+html[data-theme="boy"] .btn.soft{background:var(--pink2);color:#fff}
+html[data-theme="boy"] .btn.ghost{color:#fff;border-color:var(--line)}
+/* Keep every label readable on the colored rectangular buttons. */
+html[data-theme="boy"] .btn,html[data-theme="boy"] .btn.soft,html[data-theme="boy"] .btn.ghost,html[data-theme="boy"] label.btn{color:#fff}
 html[data-theme="boy"] .btn.clear-data-btn{background:#5484aa!important;color:#fff!important;border-color:#5484aa!important}
 html[data-theme="boy"] .nav button.active{background:var(--pink2);color:var(--rose)}
 html[data-theme="boy"] .day.today{border-color:#83b3d5;background:#f0f8ff}
@@ -295,7 +297,7 @@ function renderHistory(){let el=$('historyFilter'),f=el.dataset.value||'',q=$('h
 function deleteSession(id,start){if(!confirm('Delete this session?'))return;let i=data.sessions.findIndex(s=>(id&&s.id===id)||(!id&&s.start===start));if(i>=0)data.sessions.splice(i,1);save();render();renderHistory();renderCalendar()}
 function exportData(){let blob=new Blob([JSON.stringify({...data,backupVersion:1,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a'),stamp=iso(new Date());a.href=url;a.download='little-time-garden-backup-'+stamp+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast('Backup downloaded to this device.')}
 function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.sessions)||!Array.isArray(x.subjects))throw Error();if(!confirm('Restore this backup? It will replace the data currently in this app.'))return;data={sessions:x.sessions,subjects:x.subjects,timer:x.timer||null,name:typeof x.name==='string'?x.name:(data.name||'')};save();render();toast('Your garden has been restored.')}catch(err){toast('That backup file could not be read.')}};r.readAsText(f);e.target.value=''}
-function clearAll(){if(!confirm('This permanently clears all subjects, sessions, and timers on this device. Export a backup first if needed.'))return;if(!confirm('Are you absolutely sure?'))return;data={sessions:[],subjects:[],timer:null,name:data.name||''};save();render();renderCalendar();renderStats();renderHistory();toast('Your garden has been cleared.')}
+function clearAll(){if(!confirm('This permanently clears all subjects, sessions, timers, and your saved name on this device. Export a backup first if needed.'))return;if(!confirm('Are you absolutely sure?'))return;data={sessions:[],subjects:[],timer:null,name:''};save();$('userNameInput').value='';$('firstNameInput').value='';render();renderCalendar();renderStats();renderHistory();$('namePrompt').hidden=false;$('firstNameInput').focus();toast('Your garden has been cleared. Please enter your name to begin again.')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 load();loadTheme();$('manualDate').value=iso(new Date());render();if(!data.name){$('namePrompt').hidden=false}
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)greeting()});

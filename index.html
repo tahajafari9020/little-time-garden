@@ -149,6 +149,32 @@ html[data-theme="boy"] label.btn[aria-disabled="true"] {
   cursor: not-allowed;
   text-shadow: 0 1px 1px #3e607c;
 }
+
+/* Sky theme: keep the same gentle color hierarchy as the flower theme. */
+html[data-theme="boy"] .btn{background:#5484aa;color:#fff}
+html[data-theme="boy"] .btn.soft{background:#e5f2ff;color:#456f91}
+html[data-theme="boy"] .btn.ghost{background:#f8fbff;border:1px solid #cbdfee;color:#527b9c}
+html[data-theme="boy"] .btn:hover{filter:brightness(.97)}
+html[data-theme="boy"] .btn.soft:hover{background:#d9ecfc}
+html[data-theme="boy"] .btn.ghost:hover{background:#edf6fd}
+html[data-theme="boy"] .btn:disabled{opacity:1;cursor:not-allowed}
+html[data-theme="boy"] .btn:disabled:not(.soft):not(.ghost){background:#789fbd;color:#fff}
+html[data-theme="boy"] .btn.soft:disabled{background:#dceeff;color:#527b9c}
+html[data-theme="boy"] .btn.ghost:disabled{background:#f1f7fc;color:#6688a5;border-color:#d7e6f1}
+html[data-theme="boy"] .btn.clear-data-btn{background:#5484aa!important;color:#fff!important;border-color:#5484aa!important}
+html[data-theme="boy"] button:focus-visible,html[data-theme="boy"] input:focus-visible,html[data-theme="boy"] select:focus-visible{outline-color:#8bb9d9}
+html[data-theme="boy"] .history-select-trigger{border-color:#d5e5f1;background:#fff;color:#3f5368}
+html[data-theme="boy"] .history-select-trigger:hover{border-color:#9fc4df;background:#fafdff}
+html[data-theme="boy"] .history-select.open .history-select-trigger{border-color:#83b3d5;box-shadow:0 0 0 3px #e2f1fc;background:#fff}
+html[data-theme="boy"] .history-select-chevron{color:#5484aa}
+html[data-theme="boy"] .history-select-menu{background:#fbfdff;border-color:#d5e5f1;box-shadow:0 12px 28px #52799a20}
+html[data-theme="boy"] .history-select-option:hover{background:#edf6fd;color:#456f91}
+html[data-theme="boy"] .history-select-option[aria-selected="true"]{background:#dfefff;color:#456f91}
+html[data-theme="boy"] .history-select-option[aria-selected="true"]:before{color:#5484aa}
+html[data-theme="boy"] .history-day{color:#6489a7}
+html[data-theme="boy"] .history-day:after{background:linear-gradient(90deg,#c9dfef,transparent)}
+html[data-theme="boy"] .nav button.active{background:#e5f2ff;color:#456f91}
+html[data-theme="boy"] .pill.active{background:#e5f2ff;border-color:#c9e2f7;color:#456f91}
 </style>
 </head>
 <body>

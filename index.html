@@ -161,6 +161,15 @@ html[data-theme="boy"] .history-day{color:#6489a7}
 html[data-theme="boy"] .history-day:after{background:linear-gradient(90deg,#c9dfef,transparent)}
 html[data-theme="boy"] .nav button.active{background:#e5f2ff;color:#456f91}
 html[data-theme="boy"] .pill.active{background:#e5f2ff;border-color:#c9e2f7;color:#456f91}
+
+/* Persian layout: keep the same garden styling and animated dropdowns, with natural RTL flow. */
+html[dir="rtl"] body{direction:rtl;font-family:Tahoma,Arial,ui-rounded,system-ui,sans-serif}
+html[dir="rtl"] .history-select-option:hover{transform:translateX(-2px)}
+html[dir="rtl"] .field:after{right:auto;left:7px}
+html[dir="rtl"] .history-day:after{background:linear-gradient(270deg,#e9cbd6,transparent)}
+html[data-theme="boy"][dir="rtl"] .history-day:after{background:linear-gradient(270deg,#c9dfef,transparent)}
+html[dir="rtl"] .nav button{font-size:10px}
+
 </style>
 </head>
 <body>
@@ -223,7 +232,7 @@ html[data-theme="boy"] .pill.active{background:#e5f2ff;border-color:#c9e2f7;colo
 <section class="view" id="calendar">
  <div class="section-title">Your calendar <span>🌼</span></div>
  <div class="card">
-  <div class="calendar-head"><button class="btn ghost small" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="btn ghost small" onclick="changeMonth(1)">›</button></div>
+  <div class="calendar-head"><button class="btn ghost small" id="prevMonthBtn" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="btn ghost small" id="nextMonthBtn" onclick="changeMonth(1)">›</button></div>
   <div class="calendar-grid" id="calendarGrid"></div>
   <div class="tiny" style="margin-top:12px">✿ Days with tracked time are marked with a little flower.</div>
  </div>
@@ -261,6 +270,7 @@ html[data-theme="boy"] .pill.active{background:#e5f2ff;border-color:#c9e2f7;colo
 <section class="view" id="settings">
  <div class="section-title">Little settings <span>🧺</span></div>
  <div class="card"><strong>What should we call you? ✨</strong><p class="subtle">Your garden will greet you by name whenever you open it.</p><div class="field"><label for="userNameInput">Your name</label><input id="userNameInput" maxlength="40" placeholder="Enter your name"></div><button class="btn soft" onclick="saveUserName()">Save name</button></div>
+ <div class="card"><strong>🌐 Language</strong><p class="subtle">Choose the language for the whole app.</p><div class="field"><label for="languageSelect">Interface language</label><input type="hidden" id="languageSelect" value="en"><div class="history-select garden-select" id="languageSelectBox" data-value="en"><button class="history-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleGardenSelect('languageSelectBox')"><span id="languageSelectLabel">🇬🇧 English</span><span class="history-select-chevron">⌄</span></button><div class="history-select-menu" id="languageSelectMenu" role="listbox" aria-label="Choose interface language"><button type="button" class="history-select-option" role="option" aria-selected="true" onclick="chooseGardenSelect('languageSelectBox','en')">🇬🇧 English</button><button type="button" class="history-select-option" role="option" aria-selected="false" onclick="chooseGardenSelect('languageSelectBox','fa')">🇮🇷 فارسی</button></div></div></div><div class="tiny">Your language choice is remembered on this device.</div></div>
  <div class="card"><strong>Choose your garden style</strong><p class="subtle">Pick the cozy look you like. This changes the decorations and colors, not your saved records.</p><div class="field"><label for="themeSelect">Garden theme</label><input type="hidden" id="themeSelect" value="girl"><div class="history-select garden-select" id="themeSelectBox" data-value="girl"><button class="history-select-trigger" type="button" aria-haspopup="listbox" aria-expanded="false" onclick="toggleGardenSelect('themeSelectBox')"><span id="themeSelectLabel">🌷 Flower garden</span><span class="history-select-chevron">⌄</span></button><div class="history-select-menu" id="themeSelectMenu" role="listbox" aria-label="Choose your garden style"><button type="button" class="history-select-option" role="option" aria-selected="true" onclick="chooseGardenSelect('themeSelectBox','girl')">🌷 Flower garden</button><button type="button" class="history-select-option" role="option" aria-selected="false" onclick="chooseGardenSelect('themeSelectBox','boy')">☁️ Sky & little adventures</button></div></div></div><div class="tiny">Your choice is remembered on this device.</div></div>
  <div class="card"><strong>🌼 Backup your little garden</strong><p class="subtle">Save a copy of your subjects, study sessions, and timer so you can restore them later.</p><div class="actions"><button class="btn" onclick="exportData()">Download backup</button><label class="btn soft" for="importFile">Restore backup</label><input class="hidden" id="importFile" type="file" accept="application/json,.json" onchange="importData(event)"></div><div class="settings-note" style="margin-top:12px"><strong>Where does the backup go?</strong><br>When you download it, the JSON backup file is saved on that device—usually in the <strong>Downloads</strong> folder. It is not automatically uploaded to Google Drive or the internet. You can move it to Google Drive yourself if you want an extra copy.</div><p class="tiny">Restoring a backup replaces the current app data on this device. Export the current data first if you want to keep both copies.</p></div>
  <div class="card"><strong>Little garden care</strong><p class="subtle">You can remove a session from History, or clear all app data below.</p><button class="btn ghost clear-data-btn" onclick="clearAll()">Clear all data</button></div>
@@ -281,6 +291,167 @@ html[data-theme="boy"] .pill.active{background:#e5f2ff;border-color:#c9e2f7;colo
 <div class="toast" id="toast"></div>
 <div class="name-prompt" id="namePrompt" hidden><div class="name-prompt-card"><div style="font-size:32px">🌷</div><h2>Welcome to your little garden!</h2><p>What is your name? We’ll use it to greet you each day. You can change it anytime in Settings.</p><input id="firstNameInput" maxlength="40" autocomplete="given-name" placeholder="Your name"><button class="btn" onclick="finishNamePrompt()">Let’s begin</button><button class="btn ghost small" style="margin-left:6px" onclick="skipNamePrompt()">Maybe later</button></div></div>
 <script>
+const UI_EN_FA={
+'Little Time Garden':'باغ زمان کوچولو',
+'small moments grow into big things':'لحظه‌های کوچک، چیزهای بزرگی می‌سازند',
+'your little garden today':'باغ کوچولوی امروزت',
+'Your time, gently gathered ✿':'زمانت، با آرامش جمع‌آوری می‌شود ✿',
+'＋ Track time':'＋ ثبت زمان',
+'Study garden':'باغ مطالعه',
+'study time':'زمان مطالعه',
+'Across all subjects today':'مجموع همه درس‌ها در امروز',
+'sessions':'جلسه',
+'Little wins today':'موفقیت‌های کوچک امروز',
+'Currently growing':'در حال رشد',
+'No timer running right now.':'در حال حاضر تایمری فعال نیست.',
+"Today's activities":'فعالیت‌های امروز',
+'See history':'مشاهده تاریخچه',
+"Today's study bouquet":'دسته‌گل مطالعه امروز',
+'Track your time':'زمانت را ثبت کن',
+'stopwatch':'کرنومتر',
+'What are you doing?':'الان مشغول چه کاری هستی؟',
+'Choose a subject from your Study Garden':'یک درس از باغ مطالعه‌ات انتخاب کن',
+'Add or remove subjects in the Study Garden.':'درس‌ها را در بخش باغ مطالعه اضافه یا حذف کن.',
+'Start':'شروع',
+'Pause':'توقف موقت',
+'Resume':'ادامه',
+'Finish':'پایان',
+'The timer keeps its start time if you close the app.':'اگر برنامه را ببندی، زمان شروع تایمر حفظ می‌شود.',
+'✎ Add time manually':'✎ ثبت دستی زمان',
+'Duration (minutes)':'مدت‌زمان (دقیقه)',
+'Date':'تاریخ',
+'Note (optional)':'یادداشت (اختیاری)',
+'Save session':'ذخیره جلسه',
+'today\'s study time':'زمان مطالعه امروز',
+'Each subject grows its own little flower.':'هر درس، گل کوچولوی خودش را پرورش می‌دهد.',
+'Create a subject':'ایجاد یک درس',
+'Subject name':'نام درس',
+'＋ Add subject':'＋ افزودن درس',
+'Your subjects':'درس‌های تو',
+'Your calendar':'تقویم تو',
+'✿ Days with tracked time are marked with a little flower.':'✿ روزهایی که برایشان زمان ثبت کرده‌ای با یک گل کوچک مشخص شده‌اند.',
+'Your progress':'پیشرفت تو',
+'Today':'امروز',
+'7 days':'۷ روز',
+'30 days':'۳۰ روز',
+'total tracked':'مجموع زمان ثبت‌شده',
+'Time by activity':'زمان بر اساس فعالیت',
+'Study by subject':'مطالعه بر اساس درس',
+'Daily totals':'مجموع روزانه',
+'Your history':'تاریخچه تو',
+'Filter subject':'فیلتر بر اساس درس',
+'All subjects':'همه درس‌ها',
+'Search activity':'جست‌وجوی فعالیت',
+'Little settings':'تنظیمات کوچولو',
+'What should we call you? ✨':'دوست داری چه صدایت کنیم؟ ✨',
+'Your garden will greet you by name whenever you open it.':'هر بار که برنامه را باز کنی، باغت با نامت به تو خوشامد می‌گوید.',
+'Your name':'نام تو',
+'Save name':'ذخیره نام',
+'🌐 Language':'🌐 زبان',
+'Choose the language for the whole app.':'زبان موردنظر برای تمام بخش‌های برنامه را انتخاب کن.',
+'Interface language':'زبان رابط کاربری','Choose interface language':'انتخاب زبان رابط کاربری','Choose a study subject':'انتخاب یک درس',
+'🇬🇧 English':'🇬🇧 انگلیسی',
+'🇮🇷 فارسی':'🇮🇷 فارسی',
+'Your language choice is remembered on this device.':'انتخاب زبانت روی همین دستگاه ذخیره می‌شود.',
+'Choose your garden style':'سبک باغت را انتخاب کن',
+'Pick the cozy look you like. This changes the decorations and colors, not your saved records.':'ظاهر دلخواهت را انتخاب کن. این گزینه فقط تزئینات و رنگ‌ها را تغییر می‌دهد، نه اطلاعات ذخیره‌شده‌ات را.',
+'Garden theme':'تم باغ',
+'🌷 Flower garden':'🌷 باغ گل‌ها',
+'☁️ Sky & little adventures':'☁️ آسمان و ماجراجویی‌های کوچک',
+'Your choice is remembered on this device.':'انتخابت روی همین دستگاه ذخیره می‌شود.',
+'🌼 Backup your little garden':'🌼 از باغ کوچولویت نسخه پشتیبان بگیر',
+'Save a copy of your subjects, study sessions, and timer so you can restore them later.':'یک نسخه از درس‌ها، جلسات مطالعه و تایمرت ذخیره کن تا بعداً بتوانی آن‌ها را بازیابی کنی.',
+'Download backup':'دانلود نسخه پشتیبان',
+'Restore backup':'بازیابی نسخه پشتیبان',
+'Where does the backup go?':'نسخه پشتیبان کجا ذخیره می‌شود؟',
+'When you download it, the JSON backup file is saved on that device—usually in the':'پس از دانلود، فایل پشتیبان JSON روی همان دستگاه ذخیره می‌شود؛ معمولاً در پوشه',
+'Downloads':'دانلودها',
+'folder. It is not automatically uploaded to Google Drive or the internet. You can move it to Google Drive yourself if you want an extra copy.':'ذخیره می‌شود. این فایل به‌صورت خودکار در گوگل‌درایو یا اینترنت بارگذاری نمی‌شود. برای داشتن یک نسخه اضافی می‌توانی خودت آن را به گوگل‌درایو منتقل کنی.',
+'Restoring a backup replaces the current app data on this device. Export the current data first if you want to keep both copies.':'بازیابی نسخه پشتیبان، اطلاعات فعلی برنامه را در این دستگاه جایگزین می‌کند. اگر می‌خواهی هر دو نسخه را نگه داری، ابتدا از اطلاعات فعلی خروجی بگیر.',
+'Little garden care':'مراقبت از باغ کوچولو',
+'You can remove a session from History, or clear all app data below.':'می‌توانی یک جلسه را از تاریخچه حذف کنی یا تمام اطلاعات برنامه را از پایین پاک کنی.',
+'Clear all data':'پاک کردن همه اطلاعات',
+'About this app':'درباره برنامه',
+'Little Time Garden · Offline-friendly time and study tracker.':'باغ زمان کوچولو · برنامه ثبت زمان و مطالعه با قابلیت استفاده آفلاین.',
+'Tip: use your browser\'s “Add to Home screen” option to install it like an app. For offline installation, it must be hosted over HTTPS.':'نکته: از گزینه «افزودن به صفحه اصلی» مرورگرت استفاده کن تا برنامه را مانند یک اپ نصب کنی. برای نصب آفلاین، برنامه باید روی HTTPS میزبانی شود.',
+'Home':'خانه','Track':'ثبت زمان','Study':'مطالعه','Calendar':'تقویم','Stats':'آمار','History':'تاریخچه','Settings':'تنظیمات',
+'Welcome to your little garden!':'به باغ کوچولویت خوش آمدی!',
+'What is your name? We’ll use it to greet you each day. You can change it anytime in Settings.':'اسمت چیست؟ هر روز برای خوشامدگویی از آن استفاده می‌کنیم. هر زمان بخواهی می‌توانی آن را در تنظیمات تغییر بدهی.',
+'Let’s begin':'شروع کنیم','Maybe later':'بعداً',
+'Enter your name':'نامت را وارد کن','Search...':'جست‌وجو...','e.g. Python, University':'مثلاً پایتون، دانشگاه','45':'۴۵','A little detail':'یک توضیح کوتاه',
+'IN PROGRESS':'در حال انجام','Your day is a fresh page. Track your first little moment!':'روزت مثل یک صفحه تازه است. اولین لحظه کوچکت را ثبت کن!',
+'Your study bouquet will appear here. 🌸':'دسته‌گل مطالعه‌ات اینجا نمایش داده می‌شود. 🌸',
+'Your chart will bloom when you track time. 🌱':'وقتی زمانت را ثبت کنی، نمودارت شکوفا می‌شود. 🌱',
+'Create your first subject to start your study garden.':'برای شروع باغ مطالعه‌ات، اولین درس را ایجاد کن.',
+'Add a subject in Study Garden first.':'ابتدا یک درس در باغ مطالعه اضافه کن.',
+'No time recorded on this day yet. A fresh little page! 🐾':'هنوز زمانی برای این روز ثبت نشده است. یک صفحه کوچک و تازه! 🐾',
+'No matching sessions. 🌷':'جلسه‌ای مطابق جست‌وجو پیدا نشد. 🌷',
+'Other study':'مطالعه دیگر',
+'Please enter your name first.':'لطفاً ابتدا نامت را وارد کن.',
+'Your timer has started 🌱':'تایمرت شروع شد 🌱',
+'Finish your current timer first.':'ابتدا تایمر فعلی را تمام کن.',
+'Choose a subject from your Study Garden first.':'ابتدا یک درس از باغ مطالعه‌ات انتخاب کن.',
+'Track a little longer before saving.':'برای ذخیره، کمی بیشتر زمان ثبت کن.',
+'Time saved to your garden 🌷':'زمان در باغت ذخیره شد 🌷',
+'Please add a valid duration and date.':'لطفاً مدت‌زمان و تاریخ معتبری وارد کن.',
+'Your session has been saved ✿':'جلسه‌ات ذخیره شد ✿',
+'Enter a subject name.':'نام یک درس را وارد کن.',
+'That subject already exists.':'این درس از قبل وجود دارد.',
+'A new subject has blossomed!':'یک درس تازه شکوفا شد!',
+'Remove':'حذف',
+'Remove this subject? Saved sessions remain in your history.':'این درس حذف شود؟ جلسه‌های ذخیره‌شده در تاریخچه باقی می‌مانند.',
+'Subject removed.':'درس حذف شد.',
+'Delete':'حذف',
+'Delete this session?':'این جلسه حذف شود؟',
+'Your garden will call you':'باغت تو را این‌طور صدا خواهد کرد',
+'Backup downloaded to this device.':'نسخه پشتیبان در این دستگاه دانلود شد.',
+'Restore this backup? It will replace the data currently in this app.':'این نسخه پشتیبان بازیابی شود؟ اطلاعات فعلی برنامه جایگزین خواهد شد.',
+'Your garden has been restored.':'باغت بازیابی شد.',
+'That backup file could not be read.':'خواندن فایل پشتیبان ممکن نبود.',
+'This permanently clears all subjects, sessions, timers, and your saved name on this device. Export a backup first if needed.':'این کار همه درس‌ها، جلسه‌ها، تایمرها و نام ذخیره‌شده‌ات را برای همیشه از این دستگاه پاک می‌کند. در صورت نیاز ابتدا نسخه پشتیبان بگیر.',
+'Are you absolutely sure?':'کاملاً مطمئنی؟',
+'Your garden has been cleared. Please enter your name to begin again.':'باغت پاک شد. برای شروع دوباره، نامت را وارد کن.',
+'Good morning':'صبح بخیر','Good afternoon':'ظهر بخیر','Good evening':'عصر بخیر',
+'Welcome to your little garden.':'به باغ کوچولویت خوش آمدی.',
+'Choose your garden style':'سبک باغت را انتخاب کن'
+};
+const UI_FA_EN=Object.fromEntries(Object.entries(UI_EN_FA).map(([en,fa])=>[fa,en]));
+const LANGUAGE_KEY='little-time-garden-language-v1';
+let currentLanguage='en';
+function tr(value){if(typeof value!=='string')return value;return currentLanguage==='fa'?(UI_EN_FA[value]||value):(UI_FA_EN[value]||value)}
+function translateNodeText(raw){
+ const trimmed=raw.trim();if(!trimmed)return raw;
+ let result=tr(trimmed);
+ if(currentLanguage==='fa'){
+  result=result.replace(/Total tracked time · /g,'کل زمان ثبت‌شده · ').replace(/ study time/g,' زمان مطالعه').replace(/ total · /g,' مجموع · ').replace(/ sessions\b/g,' جلسه').replace(/ session\b/g,' جلسه');
+ }else{
+  result=result.replace(/کل زمان ثبت‌شده · /g,'Total tracked time · ').replace(/ زمان مطالعه/g,' study time').replace(/ مجموع · /g,' total · ').replace(/ جلسه/g,' sessions');
+ }
+ return raw.replace(trimmed,result);
+}
+function applyTranslations(root=document.body){
+ if(!root)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let node;while((node=walker.nextNode())){if(node.parentElement?.closest('script,style,noscript,[data-user-content]'))continue;const updated=translateNodeText(node.nodeValue);if(updated!==node.nodeValue)node.nodeValue=updated;}
+ const attrs=['placeholder','aria-label','title'];
+ root.querySelectorAll?.('*').forEach(el=>attrs.forEach(attr=>{if(el.hasAttribute(attr)){const before=el.getAttribute(attr),after=tr(before);if(after!==before)el.setAttribute(attr,after)}}));
+}
+function setLanguage(language){
+ currentLanguage=language==='fa'?'fa':'en';
+ document.documentElement.lang=currentLanguage==='fa'?'fa':'en';
+ document.documentElement.dir=currentLanguage==='fa'?'rtl':'ltr';
+ try{localStorage.setItem(LANGUAGE_KEY,currentLanguage)}catch(e){}
+ const hidden=$('languageSelect');if(hidden)hidden.value=currentLanguage;
+ const box=$('languageSelectBox');if(box){box.dataset.value=currentLanguage;const label=$('languageSelectLabel');if(label)label.textContent=currentLanguage==='fa'?'🇮🇷 فارسی':'🇬🇧 English';box.querySelectorAll('.history-select-option').forEach(o=>o.setAttribute('aria-selected',String(o.getAttribute('onclick')?.includes("'"+currentLanguage+"'")||false)))}
+ document.title=currentLanguage==='fa'?'باغ زمان کوچولو':'Little Time Garden';
+ const meta=document.querySelector('meta[name="description"]');if(meta)meta.content=currentLanguage==='fa'?'باغی کوچک برای ثبت زمان و جلسه‌های مطالعه.':'A cozy little garden for tracking your time and study sessions.';
+ if($('manualDate')&&$('todayTotal')){render();renderCalendar();renderStats();renderHistory();}
+ applyTranslations();
+}
+function loadLanguage(){let saved='en';try{saved=localStorage.getItem(LANGUAGE_KEY)||'en'}catch(e){}currentLanguage=saved==='fa'?'fa':'en';document.documentElement.lang=currentLanguage==='fa'?'fa':'en';document.documentElement.dir=currentLanguage==='fa'?'rtl':'ltr';document.title=currentLanguage==='fa'?'باغ زمان کوچولو':'Little Time Garden';const meta=document.querySelector('meta[name="description"]');if(meta&&currentLanguage==='fa')meta.content='باغی کوچک برای ثبت زمان و جلسه‌های مطالعه.';let hidden=$('languageSelect'),box=$('languageSelectBox');if(hidden)hidden.value=currentLanguage;if(box){box.dataset.value=currentLanguage;$('languageSelectLabel').textContent=currentLanguage==='fa'?'🇮🇷 فارسی':'🇬🇧 English';box.querySelectorAll('.history-select-option').forEach(o=>o.setAttribute('aria-selected',String(o.getAttribute('onclick')?.includes("'"+currentLanguage+"'")||false)))}}
+const originalConfirm=window.confirm.bind(window);
+window.confirm=(message)=>originalConfirm(tr(String(message)));
+
 const DB='little-time-garden-v1';
 let data={sessions:[],subjects:[],timer:null,name:''};
 let timerPaused=false,pausedElapsed=0,range='day',calDate=new Date(),selectedDate=iso(new Date());
@@ -288,27 +459,28 @@ const $=id=>document.getElementById(id);
 function iso(d){let x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
 function load(){try{const raw=localStorage.getItem(DB);if(raw)data={...data,...JSON.parse(raw)}}catch(e){}}
 function save(){localStorage.setItem(DB,JSON.stringify(data))}
-function greeting(){let h=new Date().getHours(),part=h<12?'Good morning':h<18?'Good afternoon':'Good evening';let name=(data.name||'').trim();$('greetingText').textContent=name?`${part}, ${name}!`:`${part}! Welcome to your little garden.`}
-function saveUserName(){let name=$('userNameInput').value.trim();if(!name){toast('Please enter your name first.');return}data.name=name;save();greeting();toast(`Your garden will call you ${name}.`)}
+function greeting(){let h=new Date().getHours(),part=h<12?'Good morning':h<18?'Good afternoon':'Good evening';let name=(data.name||'').trim();if(currentLanguage==='fa'){let faPart=h<12?'صبح بخیر':h<18?'ظهر بخیر':'عصر بخیر';$('greetingText').textContent=name?`${faPart}، ${name}!`:`${faPart}! به باغ کوچولویت خوش آمدی.`}else $('greetingText').textContent=name?`${part}, ${name}!`:`${part}! Welcome to your little garden.`}
+function saveUserName(){let name=$('userNameInput').value.trim();if(!name){toast('Please enter your name first.');return}data.name=name;save();greeting();toast(currentLanguage==='fa'?`باغت تو را ${name} صدا خواهد کرد.`:`Your garden will call you ${name}.`)}
 function finishNamePrompt(){let name=$('firstNameInput').value.trim();if(name){data.name=name;save()}$('namePrompt').hidden=true;$('userNameInput').value=data.name||'';greeting()}
 function skipNamePrompt(){$('namePrompt').hidden=true;greeting()}
 const THEME_KEY='little-time-garden-theme-v1';
-function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span><span>🛸</span><span>🪐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span><span>🍓</span><span>🐇</span>';document.querySelectorAll('.page-stickers').forEach(el=>{el.innerHTML='<span>'+(chosen==='boy'?el.dataset.boy:el.dataset.girl)+'</span>'});let sel=$('themeSelect');if(sel)sel.value=chosen;let box=$('themeSelectBox');if(box){box.dataset.value=chosen;$('themeSelectLabel').textContent=chosen==='boy'?'☁️ Sky & little adventures':'🌷 Flower garden';box.querySelectorAll('.history-select-option').forEach((o,i)=>o.setAttribute('aria-selected',String((i===1?'boy':'girl')===chosen)))}}
+function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span><span>🛸</span><span>🪐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span><span>🍓</span><span>🐇</span>';document.querySelectorAll('.page-stickers').forEach(el=>{el.innerHTML='<span>'+(chosen==='boy'?el.dataset.boy:el.dataset.girl)+'</span>'});let sel=$('themeSelect');if(sel)sel.value=chosen;let box=$('themeSelectBox');if(box){box.dataset.value=chosen;$('themeSelectLabel').textContent=chosen==='boy'?'☁️ Sky & little adventures':'🌷 Flower garden';box.querySelectorAll('.history-select-option').forEach((o,i)=>o.setAttribute('aria-selected',String((i===1?'boy':'girl')===chosen)))}applyTranslations()}
 function loadTheme(){let t='girl';try{t=localStorage.getItem(THEME_KEY)||'girl'}catch(e){}setTheme(t)}
+function getLocale(){return currentLanguage==='fa'?'fa-IR-u-ca-gregory':'en-US'}
 function fmt(ms){let m=Math.floor(ms/60000),h=Math.floor(m/60);return `${h}h ${String(m%60).padStart(2,'0')}m`}
 function clock(ms){let s=Math.floor(ms/1000);return [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,'0')).join(':')}
 function duration(s){return Math.max(0,(s.duration||0))}
 function allSessions(){let a=[...data.sessions];if(data.timer){let elapsed=data.timer.paused?data.timer.elapsed:Date.now()-data.timer.start+data.timer.elapsed;a.push({...data.timer,duration:elapsed,live:true,date:iso(new Date(data.timer.start))})}return a}
 function todaySessions(){let t=iso(new Date());return allSessions().filter(s=>s.date===t)}
-function toast(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
+function toast(msg){let t=$('toast');t.textContent=tr(msg);t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
 function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='calendar')renderCalendar();if(v==='stats')renderStats();if(v==='history')renderHistory();if(v==='study')renderStudy();window.scrollTo(0,0)}
 function sum(arr){return arr.reduce((n,s)=>n+duration(s),0)}
 function isStudy(s){return s.category==='Study'||!!s.lessonId}
-function render(){greeting();$('userNameInput').value=data.name||'';let today=todaySessions();$('todayTotal').textContent=fmt(sum(today));$('studyTotal').textContent=fmt(sum(today.filter(isStudy)));$('studyPageTotal').textContent=fmt(sum(today.filter(isStudy)));$('sessionCount').textContent=today.length;$('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});$('todayList').innerHTML=today.filter(s=>!s.live).length?today.filter(s=>!s.live).sort((a,b)=>b.start-a.start).map(sessionHTML).join(''):'<div class="card empty"><div class="art">🌷</div>Your day is a fresh page. Track your first little moment!</div>';
- let running=data.timer;$('startBtn').disabled=!!running;$('pauseBtn').disabled=!running;$('stopBtn').disabled=!running;$('pauseBtn').textContent=running?.paused?'Resume':'Pause';$('timerDisplay').textContent=running?clock(currentElapsed()):'00:00:00';let runningCard=running?`<div class="row between"><div><strong>${esc(running.activity)}</strong><small class="muted" style="display:block">${esc(running.subjectName||running.activity)}</small></div><span class="tag">IN PROGRESS</span></div><div class="timer">${clock(currentElapsed())}</div><div class="actions"><button class="btn soft" onclick="pauseTimer()">${running.paused?'Resume':'Pause'}</button><button class="btn ghost" onclick="stopTimer()">Finish</button></div>`:'<div class="empty"><div class="art">🐈</div>No timer running right now.</div>';$('activeCard').innerHTML=runningCard;
- let study=today.filter(isStudy);let by={};study.forEach(s=>{let k=s.subjectName||'Other study';by[k]=(by[k]||0)+duration(s)});$('studyBouquet').innerHTML=Object.keys(by).length?Object.entries(by).map(([k,v])=>`<div class="item"><strong>${esc(k)}</strong><span class="duration">${fmt(v)}</span></div>`).join(''):'<div class="empty">Your study bouquet will appear here. 🌸</div>';
+function render(){greeting();$('userNameInput').value=data.name||'';let today=todaySessions();$('todayTotal').textContent=fmt(sum(today));$('studyTotal').textContent=fmt(sum(today.filter(isStudy)));$('studyPageTotal').textContent=fmt(sum(today.filter(isStudy)));$('sessionCount').textContent=today.length;$('todayLabel').textContent=new Date().toLocaleDateString(getLocale(),{weekday:'short',month:'short',day:'numeric'});$('todayList').innerHTML=today.filter(s=>!s.live).length?today.filter(s=>!s.live).sort((a,b)=>b.start-a.start).map(sessionHTML).join(''):'<div class="card empty"><div class="art">🌷</div>Your day is a fresh page. Track your first little moment!</div>';
+ let running=data.timer;$('startBtn').disabled=!!running;$('pauseBtn').disabled=!running;$('stopBtn').disabled=!running;$('pauseBtn').textContent=running?.paused?'Resume':'Pause';$('timerDisplay').textContent=running?clock(currentElapsed()):'00:00:00';let runningCard=running?`<div class="row between"><div><strong data-user-content>${esc(running.activity)}</strong><small data-user-content class="muted" style="display:block">${esc(running.subjectName||running.activity)}</small></div><span class="tag">IN PROGRESS</span></div><div class="timer">${clock(currentElapsed())}</div><div class="actions"><button class="btn soft" onclick="pauseTimer()">${running.paused?'Resume':'Pause'}</button><button class="btn ghost" onclick="stopTimer()">Finish</button></div>`:'<div class="empty"><div class="art">🐈</div>No timer running right now.</div>';$('activeCard').innerHTML=runningCard;applyTranslations()
+ let study=today.filter(isStudy);let by={};study.forEach(s=>{let k=s.subjectName||'Other study';by[k]=(by[k]||0)+duration(s)});$('studyBouquet').innerHTML=Object.keys(by).length?Object.entries(by).map(([k,v])=>`<div class="item"><strong ${k==='Other study'?'':'data-user-content'}>${esc(k)}</strong><span class="duration">${fmt(v)}</span></div>`).join(''):'<div class="empty">Your study bouquet will appear here. 🌸</div>';
  renderSelects();renderStudy()}
-function sessionHTML(s){return `<div class="item"><div><strong>${esc(s.activity)}</strong><small>${esc(s.category)} · ${s.date}</small></div><span class="duration">${fmt(duration(s))}</span></div>`}
+function sessionHTML(s){let dt=new Date((s.date||iso(new Date(s.start)))+'T12:00:00');let dateLabel=Number.isNaN(dt.getTime())?s.date:dt.toLocaleDateString(getLocale(),{year:'numeric',month:'short',day:'numeric'});return `<div class="item"><div><strong data-user-content>${esc(s.activity)}</strong><small>${esc(tr(s.category))} · ${esc(dateLabel)}</small></div><span class="duration">${fmt(duration(s))}</span></div>`}
 function currentElapsed(){if(!data.timer)return 0;return data.timer.elapsed+(data.timer.paused?0:Date.now()-data.timer.start)}
 function startTimer(){if(data.timer){toast('Finish your current timer first.');return}let subject=data.subjects.find(s=>s.id===$('timerSubject').value);if(!subject){toast('Choose a subject from your Study Garden first.');return}data.timer={activity:subject.name,category:'Study',subjectId:subject.id,subjectName:subject.name,start:Date.now(),date:iso(new Date()),elapsed:0,paused:false};save();render();toast('Your timer has started 🌱')}
 function pauseTimer(){if(!data.timer)return;if(data.timer.paused){data.timer.start=Date.now();data.timer.paused=false}else{data.timer.elapsed=currentElapsed();data.timer.paused=true}save();render()}
@@ -316,28 +488,30 @@ function stopTimer(){if(!data.timer)return;let t=data.timer,ms=currentElapsed();
 function addManual(){let mins=Number($('manualMinutes').value),date=$('manualDate').value,subject=data.subjects.find(s=>s.id===$('manualSubject').value);if(!subject){toast('Choose a subject from your Study Garden first.');return}if(!Number.isFinite(mins)||mins<=0||!date){toast('Please add a valid duration and date.');return}data.sessions.push({id:crypto.randomUUID(),activity:subject.name,category:'Study',subjectId:subject.id,subjectName:subject.name,date,duration:mins*60000,start:new Date(date+'T12:00:00').getTime(),note:$('manualNote').value.trim()});save();$('manualMinutes').value='';$('manualNote').value='';render();toast('Your session has been saved ✿')}
 function addSubject(){let name=$('newSubject').value.trim();if(!name)return toast('Enter a subject name.');if(data.subjects.some(s=>s.name.toLowerCase()===name.toLowerCase()))return toast('That subject already exists.');data.subjects.push({id:crypto.randomUUID(),name});$('newSubject').value='';save();renderStudy();renderSelects();toast('A new subject has blossomed!')}
 function toggleGardenSelect(id){const box=$(id);if(!box)return;const opening=!box.classList.contains('open');document.querySelectorAll('.garden-select.open').forEach(x=>{x.classList.remove('open');x.querySelector('.history-select-trigger').setAttribute('aria-expanded','false')});if(opening){box.classList.add('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','true')}}
-function chooseGardenSelect(id,value){const box=$(id);if(!box)return;box.dataset.value=value;box.classList.remove('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','false');if(id==='themeSelectBox'){setTheme(value);return}const key=id==='timerSubjectSelect'?'timerSubject':'manualSubject';$(key).value=value;const subject=data.subjects.find(x=>x.id===value);$(id.replace('Select','Label')).textContent=subject?subject.name:'Choose a subject from your Study Garden';box.querySelectorAll('.history-select-option').forEach(o=>o.setAttribute('aria-selected',String(o.dataset.value===value)))}
-function renderSelects(){['timerSubject','manualSubject'].forEach(id=>{let box=$(id+'Select'),hidden=$(id),value=hidden.value;if(!data.subjects.some(s=>s.id===value))value='';hidden.value=value;box.dataset.value=value;$(id+'Label').textContent=data.subjects.find(s=>s.id===value)?.name||'Choose a subject from your Study Garden';$(id+'Menu').innerHTML=data.subjects.length?data.subjects.map(s=>`<button type="button" class="history-select-option" role="option" data-value="${esc(s.id)}" aria-selected="${s.id===value}" onclick="chooseGardenSelect('${id}Select','${esc(s.id)}')">${esc(s.name)}</button>`).join(''):'<div class="tiny" style="padding:10px">Add a subject in Study Garden first.</div>'})}
-function renderStudy(){let total=sum(todaySessions().filter(isStudy));$('studyPageTotal').textContent=fmt(total);let sessions=allSessions();$('subjectsList').innerHTML=data.subjects.length?data.subjects.map(s=>{let subtime=sum(sessions.filter(x=>x.subjectId===s.id||(!x.subjectId&&x.subjectName===s.name)));let count=sessions.filter(x=>x.subjectId===s.id||(!x.subjectId&&x.subjectName===s.name)).length;return `<div class="card"><div class="row between"><div><strong>🌷 ${esc(s.name)}</strong><div class="tiny">${fmt(subtime)} total · ${count} sessions</div></div><button class="btn ghost small" onclick="deleteSubject('${s.id}')">Remove</button></div></div>`}).join(''):'<div class="card empty"><div class="art">📚</div>Create your first subject to start your study garden.</div>'}
+function chooseGardenSelect(id,value){const box=$(id);if(!box)return;box.dataset.value=value;box.classList.remove('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','false');if(id==='themeSelectBox'){setTheme(value);return}if(id==='languageSelectBox'){setLanguage(value);return}const key=id==='timerSubjectSelect'?'timerSubject':'manualSubject';$(key).value=value;const subject=data.subjects.find(x=>x.id===value),label=$(id.replace('Select','Label'));label.textContent=subject?subject.name:'Choose a subject from your Study Garden';if(subject)label.setAttribute('data-user-content','');else label.removeAttribute('data-user-content');box.querySelectorAll('.history-select-option').forEach(o=>o.setAttribute('aria-selected',String(o.dataset.value===value)));applyTranslations()}
+function renderSelects(){['timerSubject','manualSubject'].forEach(id=>{let box=$(id+'Select'),hidden=$(id),value=hidden.value;if(!data.subjects.some(s=>s.id===value))value='';hidden.value=value;box.dataset.value=value;const selectedSubject=data.subjects.find(s=>s.id===value);$(id+'Label').textContent=selectedSubject?.name||'Choose a subject from your Study Garden';if(selectedSubject)$(id+'Label').setAttribute('data-user-content','');else $(id+'Label').removeAttribute('data-user-content');$(id+'Menu').innerHTML=data.subjects.length?data.subjects.map(s=>`<button type="button" class="history-select-option" role="option" data-value="${esc(s.id)}" data-user-content aria-selected="${s.id===value}" onclick="chooseGardenSelect('${id}Select','${esc(s.id)}')">${esc(s.name)}</button>`).join(''):'<div class="tiny" style="padding:10px">Add a subject in Study Garden first.</div>'})}
+function renderStudy(){let total=sum(todaySessions().filter(isStudy));$('studyPageTotal').textContent=fmt(total);let sessions=allSessions();$('subjectsList').innerHTML=data.subjects.length?data.subjects.map(s=>{let subtime=sum(sessions.filter(x=>x.subjectId===s.id||(!x.subjectId&&x.subjectName===s.name)));let count=sessions.filter(x=>x.subjectId===s.id||(!x.subjectId&&x.subjectName===s.name)).length;return `<div class="card"><div class="row between"><div><strong data-user-content>🌷 ${esc(s.name)}</strong><div class="tiny">${fmt(subtime)} total · ${count} sessions</div></div><button class="btn ghost small" onclick="deleteSubject('${s.id}')">Remove</button></div></div>`}).join(''):'<div class="card empty"><div class="art">📚</div>Create your first subject to start your study garden.</div>'}
 function deleteSubject(id){if(!confirm('Remove this subject? Saved sessions remain in your history.'))return;data.subjects=data.subjects.filter(s=>s.id!==id);save();render();toast('Subject removed.')}
 function changeMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCalendar()}
-function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('monthLabel').textContent=calDate.toLocaleDateString(undefined,{month:'long',year:'numeric'});let first=new Date(y,m,1),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();let cells='';['M','T','W','T','F','S','S'].forEach(d=>cells+=`<div class="weekday">${d}</div>`);for(let i=0;i<42;i++){let day=i-start+1,dt,muted=false;if(day<1){dt=new Date(y,m-1,prev+day);muted=true}else if(day>days){dt=new Date(y,m+1,day-days);muted=true}else dt=new Date(y,m,day);let key=iso(dt),has=allSessions().some(s=>s.date===key),cls=(muted?' muted':'')+(key===iso(new Date())?' today':'')+(key===selectedDate?' selected':'');cells+=`<button class="day${cls}" onclick="selectDate('${key}',${muted?1:0})">${dt.getDate()}<span class="dot">${has?'✿':''}</span></button>`} $('calendarGrid').innerHTML=cells;renderCalendarDetail()}
+function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('monthLabel').textContent=calDate.toLocaleDateString(getLocale(),{month:'long',year:'numeric'});$('prevMonthBtn').textContent=currentLanguage==='fa'?'›':'‹';$('nextMonthBtn').textContent=currentLanguage==='fa'?'‹':'›';let first=new Date(y,m,1),start=(first.getDay()+(currentLanguage==='fa'?1:6))%7,days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();let cells='';(currentLanguage==='fa'?['ش','ی','د','س','چ','پ','ج']:['M','T','W','T','F','S','S']).forEach(d=>cells+=`<div class="weekday">${d}</div>`);for(let i=0;i<42;i++){let day=i-start+1,dt,muted=false;if(day<1){dt=new Date(y,m-1,prev+day);muted=true}else if(day>days){dt=new Date(y,m+1,day-days);muted=true}else dt=new Date(y,m,day);let key=iso(dt),has=allSessions().some(s=>s.date===key),cls=(muted?' muted':'')+(key===iso(new Date())?' today':'')+(key===selectedDate?' selected':'');cells+=`<button class="day${cls}" onclick="selectDate('${key}',${muted?1:0})">${dt.getDate()}<span class="dot">${has?'✿':''}</span></button>`} $('calendarGrid').innerHTML=cells;renderCalendarDetail()}
 function selectDate(key,adj){selectedDate=key;if(adj){let d=new Date(key+'T12:00:00');calDate=new Date(d.getFullYear(),d.getMonth(),1)}renderCalendar()}
-function renderCalendarDetail(){let arr=allSessions().filter(s=>s.date===selectedDate),d=new Date(selectedDate+'T12:00:00');$('calendarDetail').innerHTML=`<div class="row between"><strong>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</strong><span>🌸</span></div><div class="bigtime" style="font-size:27px">${fmt(sum(arr))}</div><div class="tiny">Total tracked time · ${fmt(sum(arr.filter(isStudy)))} study time</div><div class="divider"></div>${arr.length?`<div class="list">${arr.map(sessionHTML).join('')}</div>`:'<div class="empty">No time recorded on this day yet. A fresh little page! 🐾</div>'}`}
+function renderCalendarDetail(){let arr=allSessions().filter(s=>s.date===selectedDate),d=new Date(selectedDate+'T12:00:00');$('calendarDetail').innerHTML=`<div class="row between"><strong>${d.toLocaleDateString(getLocale(),{weekday:'long',month:'long',day:'numeric'})}</strong><span>🌸</span></div><div class="bigtime" style="font-size:27px">${fmt(sum(arr))}</div><div class="tiny">Total tracked time · ${fmt(sum(arr.filter(isStudy)))} study time</div><div class="divider"></div>${arr.length?`<div class="list">${arr.map(sessionHTML).join('')}</div>`:'<div class="empty">No time recorded on this day yet. A fresh little page! 🐾</div>'}`}
 function setRange(r,el){range=r;document.querySelectorAll('[data-range]').forEach(x=>x.classList.toggle('active',x===el));renderStats()}
 function filteredRange(){let now=new Date(),start=new Date(now);if(range==='week')start.setDate(now.getDate()-6);if(range==='month')start.setDate(now.getDate()-29);let a=iso(start),b=iso(now);return allSessions().filter(s=>s.date>=a&&s.date<=b)}
-function bars(el,entries){let max=Math.max(1,...entries.map(x=>x[1]));$(el).innerHTML=entries.length?entries.map(([name,val])=>`<div class="barrow"><span>${esc(name)}</span><div class="bar"><span style="width:${Math.max(2,val/max*100)}%"></span></div><b>${fmt(val)}</b></div>`).join(''):'<div class="empty">Your chart will bloom when you track time. 🌱</div>'}
+function bars(el,entries){let max=Math.max(1,...entries.map(x=>x[1]));$(el).innerHTML=entries.length?entries.map(([name,val])=>{let customLabel=(UI_EN_FA[name]||UI_FA_EN[name])?'':'data-user-content';return `<div class="barrow"><span ${customLabel}>${esc(name)}</span><div class="bar"><span style="width:${Math.max(2,val/max*100)}%"></span></div><b>${fmt(val)}</b></div>`}).join(''):'<div class="empty">Your chart will bloom when you track time. 🌱</div>'}
 function renderStats(){let arr=filteredRange();$('rangeTotal').textContent=fmt(sum(arr));$('rangeStudy').textContent=fmt(sum(arr.filter(isStudy)));let acts={};arr.forEach(s=>acts[s.activity]=(acts[s.activity]||0)+duration(s));bars('activityChart',Object.entries(acts).sort((a,b)=>b[1]-a[1]).slice(0,8));let subs={};arr.filter(isStudy).forEach(s=>{let k=s.subjectName||'Other study';subs[k]=(subs[k]||0)+duration(s)});bars('subjectChart',Object.entries(subs).sort((a,b)=>b[1]-a[1]));let dates={};arr.forEach(s=>dates[s.date]=(dates[s.date]||0)+duration(s));bars('dailyChart',Object.entries(dates).sort((a,b)=>a[0].localeCompare(b[0])).slice(-10).map(([k,v])=>[k.slice(5),v]))}
 function toggleHistoryFilter(){const box=$('historyFilter');const open=!box.classList.contains('open');box.classList.toggle('open',open);box.querySelector('.history-select-trigger').setAttribute('aria-expanded',String(open))}
 function chooseHistoryFilter(value){const box=$('historyFilter');box.dataset.value=value;box.classList.remove('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','false');renderHistory()}
-document.addEventListener('click',e=>{['historyFilter','timerSubjectSelect','manualSubjectSelect','themeSelectBox'].forEach(id=>{const box=$(id);if(box&&!box.contains(e.target)){box.classList.remove('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','false')}})});
-function renderHistory(){let el=$('historyFilter'),f=el.dataset.value||'',q=$('historySearch').value.toLowerCase();if(f&&!data.subjects.some(x=>x.id===f))f='';el.dataset.value=f;let options=[{id:'',name:'All subjects'},...data.subjects.map(x=>({id:x.id,name:x.name}))];$('historyFilterLabel').textContent=(options.find(x=>x.id===f)||options[0]).name;$('historyFilterMenu').innerHTML=options.map(x=>`<button type="button" class="history-select-option" role="option" aria-selected="${x.id===f}" onclick="chooseHistoryFilter('${esc(x.id)}')">${esc(x.name)}</button>`).join('');let arr=[...data.sessions].filter(s=>(!f||s.subjectId===f||(!s.subjectId&&data.subjects.find(x=>x.id===f)?.name===s.subjectName))&&(!q||String(s.activity||s.subjectName||'').toLowerCase().includes(q))).sort((a,b)=>b.start-a.start);if(!arr.length){$('historyList').innerHTML='<div class="empty">No matching sessions. 🌷</div>';return}let groups={};arr.forEach(s=>(groups[s.date||iso(new Date(s.start))]??=[]).push(s));$('historyList').innerHTML=Object.entries(groups).map(([date,sessions])=>{let d=new Date(date+'T12:00:00');let label=Number.isNaN(d.getTime())?date:d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric',year:'numeric'});return `<div class="history-group"><div class="history-day"><span class="history-day-label">${esc(label)}</span></div><div class="list">${sessions.map(s=>`<div class="item"><div><strong>${esc(s.subjectName||s.activity)}</strong>${s.note?`<small>${esc(s.note)}</small>`:''}</div><div style="text-align:right"><div class="duration">${fmt(s.duration)}</div><button class="btn ghost small" style="margin-top:6px" onclick="deleteSession('${s.id||''}',${s.start})">Delete</button></div></div>`).join('')}</div></div>`}).join('')}
+document.addEventListener('click',e=>{['historyFilter','timerSubjectSelect','manualSubjectSelect','themeSelectBox','languageSelectBox'].forEach(id=>{const box=$(id);if(box&&!box.contains(e.target)){box.classList.remove('open');box.querySelector('.history-select-trigger').setAttribute('aria-expanded','false')}})});
+function renderHistory(){let el=$('historyFilter'),f=el.dataset.value||'',q=$('historySearch').value.toLowerCase();if(f&&!data.subjects.some(x=>x.id===f))f='';el.dataset.value=f;let options=[{id:'',name:'All subjects'},...data.subjects.map(x=>({id:x.id,name:x.name}))];$('historyFilterLabel').textContent=(options.find(x=>x.id===f)||options[0]).name;if(f)$('historyFilterLabel').setAttribute('data-user-content','');else $('historyFilterLabel').removeAttribute('data-user-content');$('historyFilterMenu').innerHTML=options.map(x=>`<button type="button" class="history-select-option" role="option" ${x.id?'data-user-content':''} aria-selected="${x.id===f}" onclick="chooseHistoryFilter('${esc(x.id)}')">${esc(x.name)}</button>`).join('');let arr=[...data.sessions].filter(s=>(!f||s.subjectId===f||(!s.subjectId&&data.subjects.find(x=>x.id===f)?.name===s.subjectName))&&(!q||String(s.activity||s.subjectName||'').toLowerCase().includes(q))).sort((a,b)=>b.start-a.start);if(!arr.length){$('historyList').innerHTML='<div class="empty">No matching sessions. 🌷</div>';return}let groups={};arr.forEach(s=>(groups[s.date||iso(new Date(s.start))]??=[]).push(s));$('historyList').innerHTML=Object.entries(groups).map(([date,sessions])=>{let d=new Date(date+'T12:00:00');let label=Number.isNaN(d.getTime())?date:d.toLocaleDateString(getLocale(),{weekday:'long',month:'long',day:'numeric',year:'numeric'});return `<div class="history-group"><div class="history-day"><span class="history-day-label">${esc(label)}</span></div><div class="list">${sessions.map(s=>`<div class="item"><div><strong data-user-content>${esc(s.subjectName||s.activity)}</strong>${s.note?`<small data-user-content>${esc(s.note)}</small>`:''}</div><div style="text-align:right"><div class="duration">${fmt(s.duration)}</div><button class="btn ghost small" style="margin-top:6px" onclick="deleteSession('${s.id||''}',${s.start})">Delete</button></div></div>`).join('')}</div></div>`}).join('')}
 function deleteSession(id,start){if(!confirm('Delete this session?'))return;let i=data.sessions.findIndex(s=>(id&&s.id===id)||(!id&&s.start===start));if(i>=0)data.sessions.splice(i,1);save();render();renderHistory();renderCalendar()}
 function exportData(){let blob=new Blob([JSON.stringify({...data,backupVersion:1,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a'),stamp=iso(new Date());a.href=url;a.download='little-time-garden-backup-'+stamp+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);toast('Backup downloaded to this device.')}
 function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.sessions)||!Array.isArray(x.subjects))throw Error();if(!confirm('Restore this backup? It will replace the data currently in this app.'))return;data={sessions:x.sessions,subjects:x.subjects,timer:x.timer||null,name:typeof x.name==='string'?x.name:(data.name||'')};save();render();toast('Your garden has been restored.')}catch(err){toast('That backup file could not be read.')}};r.readAsText(f);e.target.value=''}
 function clearAll(){if(!confirm('This permanently clears all subjects, sessions, timers, and your saved name on this device. Export a backup first if needed.'))return;if(!confirm('Are you absolutely sure?'))return;data={sessions:[],subjects:[],timer:null,name:''};save();$('userNameInput').value='';$('firstNameInput').value='';render();renderCalendar();renderStats();renderHistory();$('namePrompt').hidden=false;$('firstNameInput').focus();toast('Your garden has been cleared. Please enter your name to begin again.')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-load();loadTheme();$('manualDate').value=iso(new Date());render();if(!data.name){$('namePrompt').hidden=false}
+load();loadTheme();loadLanguage();$('manualDate').value=iso(new Date());render();if(!data.name){$('namePrompt').hidden=false}applyTranslations();
+const languageObserver=new MutationObserver(()=>applyTranslations());
+languageObserver.observe(document.body,{subtree:true,childList:true,characterData:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)greeting()});
 setInterval(()=>{if(data.timer&&!data.timer.paused){$('timerDisplay').textContent=clock(currentElapsed());if($('home').classList.contains('active'))render()}},1000);
 if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

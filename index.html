@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff3f5">
+<meta name="description" content="A cozy little garden for tracking your time and study sessions.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Little Time Garden</title>
+<style>
+:root{--bg:#fff8f4;--paper:#fffdfb;--pink:#f6c9d5;--pink2:#fce6eb;--rose:#a95772;--ink:#594451;--muted:#9b8490;--lav:#e9e1f7;--sage:#dcebdc;--yellow:#fff0c9;--line:#f0e4e4;--shadow:0 8px 28px #8e617012;--radius:22px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,#fff0f3 0,transparent 28rem),var(--bg);color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,-apple-system,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer;border:0}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d99bb0;outline-offset:2px}
+.app{max-width:760px;margin:auto;padding:18px 16px 100px}.top{display:flex;justify-content:space-between;align-items:center;margin:5px 2px 18px}.brand{display:flex;align-items:center;gap:10px}.logo{width:43px;height:43px;border-radius:15px;background:var(--pink2);display:grid;place-items:center;font-size:23px}.brand h1{font-size:19px;margin:0}.brand small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.date-pill{background:#fff;border:1px solid var(--line);border-radius:30px;padding:9px 12px;color:var(--rose);font-size:12px}
+.view{display:none}.view.active{display:block}.hero{background:linear-gradient(135deg,#fce5eb,#f4eafa 60%,#fff0d8);border:1px solid #f4dfe6;border-radius:28px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}.hero:after{content:"✿";position:absolute;right:17px;top:6px;font-size:70px;color:#fff9;transform:rotate(18deg)}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:#a56b80;font-weight:800}.bigtime{font-size:40px;font-weight:800;letter-spacing:-1.5px;margin:6px 0 3px;color:#75465a}.subtle{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:13px}.stat{min-height:92px}.stat .num{font-size:23px;font-weight:800;margin-top:7px;color:#785367}.section-title{font-size:17px;margin:22px 2px 8px;display:flex;align-items:center;justify-content:space-between}.btn{border-radius:15px;padding:11px 15px;background:var(--rose);color:white;font-weight:700}.btn.soft{background:var(--pink2);color:var(--rose)}.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--rose)}.btn.small{padding:8px 11px;font-size:12px;border-radius:12px}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.field{display:grid;gap:6px;margin:10px 0}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 12px;background:#fff;color:var(--ink);min-width:0}.field textarea{min-height:70px;resize:vertical}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.list{display:grid;gap:8px}.item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:15px}.item strong{font-size:14px}.item small{display:block;color:var(--muted);font-size:11px;margin-top:3px}.item .duration{font-weight:800;color:#80576a;white-space:nowrap}.tag{font-size:10px;padding:5px 8px;background:var(--lav);border-radius:20px;color:#75628d}.progress{height:8px;background:#f4edf0;border-radius:20px;overflow:hidden;margin-top:9px}.progress span{display:block;height:100%;background:linear-gradient(90deg,#e9aebe,#b7a5dc);border-radius:20px}.nav{position:fixed;bottom:0;left:0;right:0;background:#fffdf9ed;backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:10;padding:8px max(8px,env(safe-area-inset-right)) calc(8px + env(safe-area-inset-bottom));}.navinner{width:min(760px,100%);display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.nav button{background:transparent;color:#a18b96;font-size:10px;padding:6px 2px;border-radius:13px}.nav button span{display:block;font-size:20px;margin-bottom:2px}.nav button.active{background:var(--pink2);color:var(--rose);font-weight:800}.calendar-head{display:flex;align-items:center;justify-content:space-between;margin:8px 0 14px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.weekday{text-align:center;color:var(--muted);font-size:10px;padding:7px 0}.day{min-height:48px;background:#fff;border:1px solid var(--line);border-radius:13px;color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:13px;position:relative}.day.muted{opacity:.35}.day.today{border:2px solid #d98ca5;background:#fff5f7}.day.selected{background:var(--lav);border-color:#c9b7e7}.day .dot{font-size:9px;color:#b16d87;min-height:9px}.day .flower{position:absolute;right:3px;top:1px;font-size:9px}.calendar-detail{margin-top:14px}.barrow{display:grid;grid-template-columns:80px 1fr 48px;gap:8px;align-items:center;margin:11px 0;font-size:12px}.bar{height:10px;background:#f4edf0;border-radius:20px;overflow:hidden}.bar span{height:100%;display:block;background:linear-gradient(90deg,#e7a7b9,#b8a7df);border-radius:20px}.empty{text-align:center;padding:25px 10px;color:var(--muted);font-size:13px}.empty .art{font-size:30px;margin-bottom:8px}.timer{font-size:36px;font-weight:800;letter-spacing:1px;color:#75465a;text-align:center;margin:10px 0}.pillrow{display:flex;gap:7px;flex-wrap:wrap}.pill{border-radius:30px;padding:7px 11px;background:#fff;border:1px solid var(--line);font-size:11px;color:var(--rose)}.pill.active{background:var(--pink2);border-color:var(--pink);font-weight:800}.muted{color:var(--muted)}.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#68495a;color:white;padding:10px 16px;border-radius:30px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1}.hidden{display:none!important}.tiny{font-size:11px;color:var(--muted)}.divider{height:1px;background:var(--line);margin:12px 0}
+@media(min-width:620px){.app{padding-top:26px}.hero{padding:26px}.bigtime{font-size:48px}.day{min-height:65px}.grid2{gap:15px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><div class="logo">🌷</div><div><h1>Little Time Garden</h1><small>small moments grow into big things</small></div></div><div class="date-pill" id="todayLabel"></div></header>
+
+<section class="view active" id="home">
+ <div class="hero"><div class="eyebrow">your little garden today</div><div class="bigtime" id="todayTotal">0h 00m</div><div class="subtle">Your time, gently gathered ✿</div>
+  <div class="actions"><button class="btn" onclick="showView('track')">＋ Track time</button><button class="btn soft" onclick="showView('study')">Study garden</button></div>
+ </div>
+ <div class="grid2"><div class="card stat"><div class="eyebrow">study time</div><div class="num" id="studyTotal">0h 00m</div><div class="tiny">Across all lessons today</div></div><div class="card stat"><div class="eyebrow">sessions</div><div class="num" id="sessionCount">0</div><div class="tiny">Little wins today</div></div></div>
+ <div class="section-title">Currently growing <span>🌱</span></div>
+ <div class="card" id="activeCard"><div class="empty"><div class="art">🐈</div>No timer running right now.</div></div>
+ <div class="section-title">Today's activities <button class="btn ghost small" onclick="showView('history')">See history</button></div>
+ <div class="list" id="todayList"></div>
+ <div class="card"><div class="row between"><strong>Today's study bouquet</strong><span>💐</span></div><div id="studyBouquet" class="list" style="margin-top:10px"></div></div>
+</section>
+
+<section class="view" id="track">
+ <div class="section-title">Track your time <span>⏱️</span></div>
+ <div class="card">
+  <div class="eyebrow">stopwatch</div>
+  <div class="field"><label>What are you doing?</label><input id="timerActivity" placeholder="e.g. Reading, Python, walking"></div>
+  <div class="two"><div class="field"><label>Section</label><select id="timerCategory"><option>Personal</option><option>Study</option><option>Work</option><option>Exercise</option><option>Leisure</option><option>Other</option></select></div><div class="field"><label>Subject / lesson (optional)</label><select id="timerLesson"><option value="">None</option></select></div></div>
+  <div class="timer" id="timerDisplay">00:00:00</div>
+  <div class="actions" style="justify-content:center"><button class="btn" id="startBtn" onclick="startTimer()">Start</button><button class="btn soft" id="pauseBtn" onclick="pauseTimer()" disabled>Pause</button><button class="btn ghost" id="stopBtn" onclick="stopTimer()" disabled>Finish</button></div>
+  <p class="tiny" style="text-align:center">The timer keeps its start time if you close the app.</p>
+ </div>
+ <div class="card">
+  <div class="row between"><strong>✎ Add time manually</strong><span>📝</span></div>
+  <div class="field"><label>Activity name</label><input id="manualActivity" placeholder="What did you spend time on?"></div>
+  <div class="two"><div class="field"><label>Section</label><select id="manualCategory" onchange="syncLessonSelect('manualLesson','manualCategory')"><option>Personal</option><option>Study</option><option>Work</option><option>Exercise</option><option>Leisure</option><option>Other</option></select></div><div class="field"><label>Duration (minutes)</label><input id="manualMinutes" type="number" min="1" step="1" placeholder="45"></div></div>
+  <div class="field"><label>Study lesson (optional)</label><select id="manualLesson"><option value="">None</option></select></div>
+  <div class="two"><div class="field"><label>Date</label><input id="manualDate" type="date"></div><div class="field"><label>Note (optional)</label><input id="manualNote" placeholder="A little detail"></div></div>
+  <button class="btn" onclick="addManual()">Save session</button>
+ </div>
+</section>
+
+<section class="view" id="study">
+ <div class="section-title">Study garden <span>📚</span></div>
+ <div class="hero"><div class="eyebrow">today's study time</div><div class="bigtime" id="studyPageTotal">0h 00m</div><div class="subtle">Every lesson gets its own little flower.</div></div>
+ <div class="card">
+  <strong>Create a subject</strong>
+  <div class="field"><label>Subject name</label><input id="newSubject" placeholder="e.g. Python, University"></div>
+  <button class="btn soft" onclick="addSubject()">＋ Add subject</button>
+  <div class="divider"></div><strong>Add a lesson</strong>
+  <div class="field"><label>Choose subject</label><select id="lessonSubject"></select></div>
+  <div class="field"><label>Lesson name</label><input id="newLesson" placeholder="e.g. Functions, Chapter 2"></div>
+  <button class="btn soft" onclick="addLesson()">＋ Add lesson</button>
+ </div>
+ <div class="section-title">Your subjects</div><div id="subjectsList" class="list"></div>
+</section>
+
+<section class="view" id="calendar">
+ <div class="section-title">Your calendar <span>🌼</span></div>
+ <div class="card">
+  <div class="calendar-head"><button class="btn ghost small" onclick="changeMonth(-1)">‹</button><strong id="monthLabel"></strong><button class="btn ghost small" onclick="changeMonth(1)">›</button></div>
+  <div class="calendar-grid" id="calendarGrid"></div>
+  <div class="tiny" style="margin-top:12px">✿ Days with tracked time are marked with a little flower.</div>
+ </div>
+ <div class="card calendar-detail" id="calendarDetail"></div>
+</section>
+
+<section class="view" id="stats">
+ <div class="section-title">Your progress <span>✨</span></div>
+ <div class="card">
+  <div class="pillrow"><button class="pill active" data-range="day" onclick="setRange('day',this)">Today</button><button class="pill" data-range="week" onclick="setRange('week',this)">7 days</button><button class="pill" data-range="month" onclick="setRange('month',this)">30 days</button></div>
+  <div class="grid2"><div><div class="eyebrow" style="margin-top:15px">total tracked</div><div class="num" id="rangeTotal">0h 00m</div></div><div><div class="eyebrow" style="margin-top:15px">study time</div><div class="num" id="rangeStudy">0h 00m</div></div></div>
+  <div class="divider"></div><strong>Time by activity</strong><div id="activityChart"></div>
+ </div>
+ <div class="card"><strong>Study by subject</strong><div id="subjectChart"></div></div>
+ <div class="card"><strong>Daily totals</strong><div id="dailyChart"></div></div>
+</section>
+
+<section class="view" id="history">
+ <div class="section-title">Your history <span>📖</span></div>
+ <div class="card">
+  <div class="two"><div class="field"><label>Filter section</label><select id="historyFilter" onchange="renderHistory()"><option value="">All sections</option><option>Study</option><option>Personal</option><option>Work</option><option>Exercise</option><option>Leisure</option><option>Other</option></select></div><div class="field"><label>Search activity</label><input id="historySearch" placeholder="Search..." oninput="renderHistory()"></div></div>
+  <div class="list" id="historyList"></div>
+ </div>
+</section>
+
+<section class="view" id="settings">
+ <div class="section-title">Little settings <span>🧺</span></div>
+ <div class="card"><strong>Your data belongs to you</strong><p class="subtle">Your records are stored on this device. Export a backup before changing phones or clearing browser data.</p><div class="actions"><button class="btn" onclick="exportData()">Export backup</button><label class="btn soft" for="importFile">Restore backup</label><input class="hidden" id="importFile" type="file" accept="application/json" onchange="importData(event)"></div></div>
+ <div class="card"><strong>Little garden care</strong><p class="subtle">You can remove a session from History, or clear all app data below.</p><button class="btn ghost" onclick="clearAll()">Clear all data</button></div>
+ <div class="card"><strong>About this app</strong><p class="subtle">Little Time Garden · Offline-friendly time and study tracker.</p><p class="tiny">Tip: use your browser's “Add to Home screen” option to install it like an app. For offline installation, it must be hosted over HTTPS.</p></div>
+</section>
+</div>
+<nav class="nav"><div class="navinner">
+<button class="active" data-view="home" onclick="showView('home')"><span>🏡</span>Home</button>
+<button data-view="track" onclick="showView('track')"><span>⏱️</span>Track</button>
+<button data-view="study" onclick="showView('study')"><span>📚</span>Study</button>
+<button data-view="calendar" onclick="showView('calendar')"><span>🌼</span>Calendar</button>
+<button data-view="stats" onclick="showView('stats')"><span>📊</span>Stats</button>
+</div></nav>
+<div class="toast" id="toast"></div>
+<script>
+const DB='little-time-garden-v1';
+let data={sessions:[],subjects:[],timer:null};
+let timerPaused=false,pausedElapsed=0,range='day',calDate=new Date(),selectedDate=iso(new Date());
+const $=id=>document.getElementById(id);
+function iso(d){let x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`}
+function load(){try{const raw=localStorage.getItem(DB);if(raw)data={...data,...JSON.parse(raw)}}catch(e){}}
+function save(){localStorage.setItem(DB,JSON.stringify(data))}
+function fmt(ms){let m=Math.floor(ms/60000),h=Math.floor(m/60);return `${h}h ${String(m%60).padStart(2,'0')}m`}
+function clock(ms){let s=Math.floor(ms/1000);return [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,'0')).join(':')}
+function duration(s){return Math.max(0,(s.duration||0))}
+function allSessions(){let a=[...data.sessions];if(data.timer){let elapsed=data.timer.paused?data.timer.elapsed:Date.now()-data.timer.start+data.timer.elapsed;a.push({...data.timer,duration:elapsed,live:true,date:iso(new Date(data.timer.start))})}return a}
+function todaySessions(){let t=iso(new Date());return allSessions().filter(s=>s.date===t)}
+function toast(msg){let t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2100)}
+function showView(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='calendar')renderCalendar();if(v==='stats')renderStats();if(v==='history')renderHistory();if(v==='study')renderStudy();window.scrollTo(0,0)}
+function sum(arr){return arr.reduce((n,s)=>n+duration(s),0)}
+function isStudy(s){return s.category==='Study'||!!s.lessonId}
+function render(){let today=todaySessions();$('todayTotal').textContent=fmt(sum(today));$('studyTotal').textContent=fmt(sum(today.filter(isStudy)));$('studyPageTotal').textContent=fmt(sum(today.filter(isStudy)));$('sessionCount').textContent=today.length;$('todayLabel').textContent=new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});$('todayList').innerHTML=today.filter(s=>!s.live).length?today.filter(s=>!s.live).sort((a,b)=>b.start-a.start).map(sessionHTML).join(''):'<div class="card empty"><div class="art">🌷</div>Your day is a fresh page. Track your first little moment!</div>';
+ let running=data.timer;$('activeCard').innerHTML=running?`<div class="row between"><div><strong>${esc(running.activity)}</strong><small class="muted" style="display:block">${esc(running.category)}${running.lessonName?' · '+esc(running.lessonName):''}</small></div><span class="tag">IN PROGRESS</span></div><div class="timer">${clock(currentElapsed())}</div><div class="actions"><button class="btn soft" onclick="pauseTimer()">${running.paused?'Resume':'Pause'}</button><button class="btn ghost" onclick="stopTimer()">Finish</button></div>`:'<div class="empty"><div class="art">🐈</div>No timer running right now.</div>';
+ let study=today.filter(isStudy);let by={};study.forEach(s=>{let k=s.subjectName||'Other study';by[k]=(by[k]||0)+duration(s)});$('studyBouquet').innerHTML=Object.keys(by).length?Object.entries(by).map(([k,v])=>`<div class="item"><strong>${esc(k)}</strong><span class="duration">${fmt(v)}</span></div>`).join(''):'<div class="empty">Your study bouquet will appear here. 🌸</div>';
+ renderSelects();renderStudy()}
+function sessionHTML(s){return `<div class="item"><div><strong>${esc(s.activity)}</strong><small>${esc(s.category)} · ${s.date}${s.lessonName?' · '+esc(s.lessonName):''}</small></div><span class="duration">${fmt(duration(s))}</span></div>`}
+function currentElapsed(){if(!data.timer)return 0;return data.timer.elapsed+(data.timer.paused?0:Date.now()-data.timer.start)}
+function startTimer(){let activity=$('timerActivity').value.trim();if(!activity){toast('Give your activity a name first.');return}if(data.timer){toast('Finish your current timer first.');return}let lessonId=$('timerLesson').value;let lesson=findLesson(lessonId);data.timer={activity,category:$('timerCategory').value,lessonId:lessonId||null,lessonName:lesson?.lesson||'',subjectName:lesson?.subject||'',start:Date.now(),date:iso(new Date()),elapsed:0,paused:false};save();render();toast('Your timer has started 🌱')}
+function pauseTimer(){if(!data.timer)return;if(data.timer.paused){data.timer.start=Date.now();data.timer.paused=false}else{data.timer.elapsed=currentElapsed();data.timer.paused=true}save();render()}
+function stopTimer(){if(!data.timer)return;let t=data.timer,ms=currentElapsed();if(ms<1000){toast('Track a little longer before saving.');return}data.sessions.push({...t,duration:ms,end:Date.now(),live:false});data.timer=null;save();render();toast('Time saved to your garden 🌷')}
+function addManual(){let activity=$('manualActivity').value.trim(),mins=Number($('manualMinutes').value),date=$('manualDate').value;if(!activity||!Number.isFinite(mins)||mins<=0||!date){toast('Please add an activity, date, and valid duration.');return}let lesson=findLesson($('manualLesson').value);data.sessions.push({activity,category:$('manualCategory').value,lessonId:lesson?.id||null,lessonName:lesson?.lesson||'',subjectName:lesson?.subject||'',date,duration:mins*60000,start:new Date(date+'T12:00:00').getTime(),note:$('manualNote').value.trim()});save();$('manualActivity').value='';$('manualMinutes').value='';$('manualNote').value='';render();toast('Your session has been saved ✿')}
+function addSubject(){let name=$('newSubject').value.trim();if(!name)return toast('Enter a subject name.');if(data.subjects.some(s=>s.name.toLowerCase()===name.toLowerCase()))return toast('That subject already exists.');data.subjects.push({id:crypto.randomUUID(),name,lessons:[]});$('newSubject').value='';save();renderStudy();renderSelects();toast('A new subject has blossomed!')}
+function addLesson(){let id=$('lessonSubject').value,lesson=$('newLesson').value.trim(),sub=data.subjects.find(s=>s.id===id);if(!sub||!lesson)return toast('Choose a subject and enter a lesson.');sub.lessons.push({id:crypto.randomUUID(),name:lesson});$('newLesson').value='';save();renderStudy();renderSelects();toast('Lesson added 🌼')}
+function findLesson(id){if(!id)return null;for(let s of data.subjects){let l=s.lessons.find(x=>x.id===id);if(l)return {id:l.id,lesson:l.name,subject:s.name}}return null}
+function renderSelects(){let opts='<option value="">None</option>';data.subjects.forEach(s=>s.lessons.forEach(l=>opts+=`<option value="${l.id}">${esc(s.name)} · ${esc(l.name)}</option>`));['timerLesson','manualLesson'].forEach(id=>{let el=$(id),v=el.value;el.innerHTML=opts;el.value=v})}
+function syncLessonSelect(target,category){if($(category).value!=='Study'){$(target).value=''}}
+function renderStudy(){let total=sum(todaySessions().filter(isStudy));$('studyPageTotal').textContent=fmt(total);$('lessonSubject').innerHTML=data.subjects.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('')||'<option value="">Create a subject first</option>';let sessions=allSessions();$('subjectsList').innerHTML=data.subjects.length?data.subjects.map(s=>{let subtime=sum(sessions.filter(x=>x.subjectName===s.name));return `<div class="card"><div class="row between"><div><strong>🌷 ${esc(s.name)}</strong><div class="tiny">${fmt(subtime)} total tracked</div></div><button class="btn ghost small" onclick="deleteSubject('${s.id}')">Remove</button></div>${s.lessons.map(l=>{let t=sum(sessions.filter(x=>x.lessonId===l.id));return `<div class="item" style="margin-top:8px"><div><strong>${esc(l.name)}</strong><small>${sessions.filter(x=>x.lessonId===l.id).length} sessions</small></div><span class="duration">${fmt(t)}</span></div>`}).join('')||'<p class="tiny">No lessons yet. Add one above.</p>'}</div>`}).join(''):'<div class="card empty"><div class="art">📚</div>Create your first subject to start your study garden.</div>'}
+function deleteSubject(id){if(!confirm('Remove this subject and its lesson links? Saved sessions remain in your history.'))return;data.subjects=data.subjects.filter(s=>s.id!==id);save();render();toast('Subject removed.')}
+function changeMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCalendar()}
+function renderCalendar(){let y=calDate.getFullYear(),m=calDate.getMonth();$('monthLabel').textContent=calDate.toLocaleDateString(undefined,{month:'long',year:'numeric'});let first=new Date(y,m,1),start=(first.getDay()+6)%7,days=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate();let cells='';['M','T','W','T','F','S','S'].forEach(d=>cells+=`<div class="weekday">${d}</div>`);for(let i=0;i<42;i++){let day=i-start+1,dt,muted=false;if(day<1){dt=new Date(y,m-1,prev+day);muted=true}else if(day>days){dt=new Date(y,m+1,day-days);muted=true}else dt=new Date(y,m,day);let key=iso(dt),has=allSessions().some(s=>s.date===key),cls=(muted?' muted':'')+(key===iso(new Date())?' today':'')+(key===selectedDate?' selected':'');cells+=`<button class="day${cls}" onclick="selectDate('${key}',${muted?1:0})">${dt.getDate()}<span class="dot">${has?'✿':''}</span></button>`} $('calendarGrid').innerHTML=cells;renderCalendarDetail()}
+function selectDate(key,adj){selectedDate=key;if(adj){let d=new Date(key+'T12:00:00');calDate=new Date(d.getFullYear(),d.getMonth(),1)}renderCalendar()}
+function renderCalendarDetail(){let arr=allSessions().filter(s=>s.date===selectedDate),d=new Date(selectedDate+'T12:00:00');$('calendarDetail').innerHTML=`<div class="row between"><strong>${d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'})}</strong><span>🌸</span></div><div class="bigtime" style="font-size:27px">${fmt(sum(arr))}</div><div class="tiny">Total tracked time · ${fmt(sum(arr.filter(isStudy)))} study time</div><div class="divider"></div>${arr.length?`<div class="list">${arr.map(sessionHTML).join('')}</div>`:'<div class="empty">No time recorded on this day yet. A fresh little page! 🐾</div>'}`}
+function setRange(r,el){range=r;document.querySelectorAll('[data-range]').forEach(x=>x.classList.toggle('active',x===el));renderStats()}
+function filteredRange(){let now=new Date(),start=new Date(now);if(range==='week')start.setDate(now.getDate()-6);if(range==='month')start.setDate(now.getDate()-29);let a=iso(start),b=iso(now);return allSessions().filter(s=>s.date>=a&&s.date<=b)}
+function bars(el,entries){let max=Math.max(1,...entries.map(x=>x[1]));$(el).innerHTML=entries.length?entries.map(([name,val])=>`<div class="barrow"><span>${esc(name)}</span><div class="bar"><span style="width:${Math.max(2,val/max*100)}%"></span></div><b>${fmt(val)}</b></div>`).join(''):'<div class="empty">Your chart will bloom when you track time. 🌱</div>'}
+function renderStats(){let arr=filteredRange();$('rangeTotal').textContent=fmt(sum(arr));$('rangeStudy').textContent=fmt(sum(arr.filter(isStudy)));let acts={};arr.forEach(s=>acts[s.activity]=(acts[s.activity]||0)+duration(s));bars('activityChart',Object.entries(acts).sort((a,b)=>b[1]-a[1]).slice(0,8));let subs={};arr.filter(isStudy).forEach(s=>{let k=s.subjectName||'Other study';subs[k]=(subs[k]||0)+duration(s)});bars('subjectChart',Object.entries(subs).sort((a,b)=>b[1]-a[1]));let dates={};arr.forEach(s=>dates[s.date]=(dates[s.date]||0)+duration(s));bars('dailyChart',Object.entries(dates).sort((a,b)=>a[0].localeCompare(b[0])).slice(-10).map(([k,v])=>[k.slice(5),v]))}
+function renderHistory(){let f=$('historyFilter').value,q=$('historySearch').value.toLowerCase();let arr=[...data.sessions].filter(s=>(!f||s.category===f)&&(!q||s.activity.toLowerCase().includes(q)||((s.lessonName||'').toLowerCase().includes(q)))).sort((a,b)=>b.start-a.start);$('historyList').innerHTML=arr.length?arr.map(s=>`<div class="item"><div><strong>${esc(s.activity)}</strong><small>${esc(s.category)} · ${s.date}${s.lessonName?' · '+esc(s.lessonName):''}</small>${s.note?`<small>${esc(s.note)}</small>`:''}</div><div style="text-align:right"><div class="duration">${fmt(s.duration)}</div><button class="btn ghost small" style="margin-top:6px" onclick="deleteSession('${s.id||''}',${s.start})">Delete</button></div></div>`).join(''):'<div class="empty">No matching sessions. 🌷</div>'}
+function deleteSession(id,start){if(!confirm('Delete this session?'))return;let i=data.sessions.findIndex(s=>(id&&s.id===id)||(!id&&s.start===start));if(i>=0)data.sessions.splice(i,1);save();render();renderHistory();renderCalendar()}
+function exportData(){let blob=new Blob([JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='little-time-garden-backup.json';a.click();URL.revokeObjectURL(url);toast('Backup file prepared.')}
+function importData(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.sessions)||!Array.isArray(x.subjects))throw Error();if(!confirm('Restore this backup? It will replace the data currently in this app.'))return;data={sessions:x.sessions,subjects:x.subjects,timer:x.timer||null};save();render();toast('Your garden has been restored.')}catch(err){toast('That backup file could not be read.')}};r.readAsText(f);e.target.value=''}
+function clearAll(){if(!confirm('This permanently clears all subjects, sessions, and timers on this device. Export a backup first if needed.'))return;if(!confirm('Are you absolutely sure?'))return;data={sessions:[],subjects:[],timer:null};save();render();renderCalendar();renderStats();renderHistory();toast('Your garden has been cleared.')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+load();$('manualDate').value=iso(new Date());render();
+setInterval(()=>{if(data.timer&&!data.timer.paused){$('timerDisplay').textContent=clock(currentElapsed());if($('home').classList.contains('active'))render()}},1000);
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+</script>
+</body></html>

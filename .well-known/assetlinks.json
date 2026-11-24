@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "com.tahajafari.littletimegarden",
-        "sha256_cert_fingerprints": ["99:72:6E:45:DA:AE:BE:64:33:FC:3C:58:8B:BF:86:32:A6:D8:63:A7:94:DB:50:2B:CD:FD:60:EC:1D:01:CB:1B"]
-      }
-    }]

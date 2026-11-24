@@ -38,6 +38,28 @@ html[data-theme="boy"] .day.selected{background:var(--lav);border-color:#b6c6e7}
 html[data-theme="boy"] .card:after{content:"★"}
 html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a18)}
 
+
+/* Extra tiny garden decorations: soft, playful, and deliberately low-contrast. */
+body:before{content:"✦   ·   ✿   ·   ✧";position:fixed;left:10px;top:43%;z-index:0;color:#d9b5c2;opacity:.25;font-size:17px;line-height:3;writing-mode:vertical-rl;pointer-events:none;letter-spacing:8px}
+body:after{content:"✧   ·   ❀   ·   ✦";position:fixed;right:10px;top:27%;z-index:0;color:#c7b8d9;opacity:.25;font-size:17px;line-height:3;writing-mode:vertical-rl;pointer-events:none;letter-spacing:8px}
+.app{position:relative;z-index:1}
+.sticker-row{gap:clamp(14px,4vw,30px);padding:2px 0 17px;font-size:21px}
+.sticker-row span{display:inline-block;animation:stickerBob 3.8s ease-in-out infinite;}
+.sticker-row span:nth-child(2n){animation-delay:-1.2s}.sticker-row span:nth-child(3n){animation-delay:-2.1s}
+.page-stickers{min-height:54px;margin:17px 0 5px;padding:4px 8px;border-radius:18px;background:linear-gradient(90deg,transparent,#fff9 18%,#fff9 82%,transparent)}
+.page-stickers span{font-size:21px;letter-spacing:6px;text-shadow:0 2px 0 #fff8}
+.hero{isolation:isolate}
+.hero:before{content:"♡  ✧  ♡";position:absolute;right:18px;bottom:12px;color:#fff9;font-size:17px;letter-spacing:8px;z-index:-1;transform:rotate(-8deg)}
+.card:after{content:"✿  ·";right:10px;bottom:6px;font-size:15px;letter-spacing:2px;opacity:.16}
+.card.stat:after{content:"✧";font-size:24px;right:13px;top:8px;bottom:auto}
+.empty .art{display:inline-grid;place-items:center;width:54px;height:54px;border-radius:19px;background:linear-gradient(145deg,#fff4f6,#f5effb);box-shadow:0 5px 16px #8e617012}
+html[data-theme="boy"] body:before{color:#9ebbd2}html[data-theme="boy"] body:after{color:#aeb9dc}
+html[data-theme="boy"] .page-stickers{background:linear-gradient(90deg,transparent,#f8fbff 18%,#f8fbff 82%,transparent)}
+html[data-theme="boy"] .empty .art{background:linear-gradient(145deg,#eff8ff,#f0f1ff)}
+@keyframes stickerBob{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+@media(max-width:480px){body:before,body:after{font-size:13px;opacity:.15}.page-stickers span{font-size:18px;letter-spacing:3px}.sticker-row{font-size:19px}}
+@media(prefers-reduced-motion:reduce){.sticker-row span{animation:none}}
+
 .settings-note{background:var(--pink2);border:1px dashed var(--pink);border-radius:14px;padding:11px 12px;font-size:12px;color:var(--ink);line-height:1.55}
 @media(min-width:620px){.app{padding-top:26px}.hero{padding:26px}.bigtime{font-size:48px}.day{min-height:65px}.grid2{gap:15px}}
 </style>
@@ -58,7 +80,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
  <div class="list" id="todayList"></div>
  <div class="card"><div class="row between"><strong>Today's study bouquet</strong><span>💐</span></div><div id="studyBouquet" class="list" style="margin-top:10px"></div></div>
 
- <div class="page-stickers" data-girl="🌷  🐈  🎀  🦋  🍓  🧁  🌼" data-boy="🧸  ⭐  🚀  🦕  ☁️  🪐  🐻" aria-hidden="true"><span>🌷  🐈  🎀  🦋  🍓  🧁  🌼</span></div>
+ <div class="page-stickers" data-girl="🌷  🐈  🎀  🦋  🍓  🧁  🌼  🐇  🍄  🐝" data-boy="🧸  ⭐  🚀  🦕  ☁️  🪐  🐻  🛸  🦖  🪁" aria-hidden="true"><span>🌷  🐈  🎀  🦋  🍓  🧁  🌼</span></div>
 </section>
 
 <section class="view" id="track">
@@ -80,7 +102,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
   <button class="btn" onclick="addManual()">Save session</button>
  </div>
 
- <div class="page-stickers" data-girl="🐇  📝  🌸  🍰  🐾" data-boy="🚗  🛸  ⭐  🐢  🧩" aria-hidden="true"><span>🐇  📝  🌸  🍰  🐾</span></div>
+ <div class="page-stickers" data-girl="🐇  📝  🌸  🍰  🐾  🧸  🍒  🫖" data-boy="🚗  🛸  ⭐  🐢  🧩  🦕  🪐  🏁" aria-hidden="true"><span>🐇  📝  🌸  🍰  🐾</span></div>
 </section>
 
 <section class="view" id="study">
@@ -97,7 +119,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
  </div>
  <div class="section-title">Your subjects</div><div id="subjectsList" class="list"></div>
 
- <div class="page-stickers" data-girl="📚  🌼  🐈  ✏️  🦋  🍓" data-boy="📚  🦖  ✏️  ⭐  🪐  🧸" aria-hidden="true"><span>📚  🌼  🐈  ✏️  🦋  🍓</span></div>
+ <div class="page-stickers" data-girl="📚  🌼  🐈  ✏️  🦋  🍓  🐞  🪻  🐇" data-boy="📚  🦖  ✏️  ⭐  🪐  🧸  🚀  🦕  🧩" aria-hidden="true"><span>📚  🌼  🐈  ✏️  🦋  🍓</span></div>
 </section>
 
 <section class="view" id="calendar">
@@ -109,7 +131,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
  </div>
  <div class="card calendar-detail" id="calendarDetail"></div>
 
- <div class="page-stickers" data-girl="🌻  🐝  🌷  🐞  🍀" data-boy="☀️  ☁️  ⭐  🌙  🪁" aria-hidden="true"><span>🌻  🐝  🌷  🐞  🍀</span></div>
+ <div class="page-stickers" data-girl="🌻  🐝  🌷  🐞  🍀  🦋  🍄  🐌" data-boy="☀️  ☁️  ⭐  🌙  🪁  🛸  🐢  🪐" aria-hidden="true"><span>🌻  🐝  🌷  🐞  🍀</span></div>
 </section>
 
 <section class="view" id="stats">
@@ -122,7 +144,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
  <div class="card"><strong>Study by subject</strong><div id="subjectChart"></div></div>
  <div class="card"><strong>Daily totals</strong><div id="dailyChart"></div></div>
 
- <div class="page-stickers" data-girl="✨  🌸  🐈  🎀  🌼" data-boy="⭐  🏆  🚀  🪐  🧸" aria-hidden="true"><span>✨  🌸  🐈  🎀  🌼</span></div>
+ <div class="page-stickers" data-girl="✨  🌸  🐈  🎀  🌼  🍓  🐇  🧁" data-boy="⭐  🏆  🚀  🪐  🧸  🦖  🛸  ☄️" aria-hidden="true"><span>✨  🌸  🐈  🎀  🌼</span></div>
 </section>
 
 <section class="view" id="history">
@@ -132,7 +154,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
   <div class="list" id="historyList"></div>
  </div>
 
- <div class="page-stickers" data-girl="📖  🐇  🌷  🍄  🦋" data-boy="📖  🐻  🦕  ⭐  ☁️" aria-hidden="true"><span>📖  🐇  🌷  🍄  🦋</span></div>
+ <div class="page-stickers" data-girl="📖  🐇  🌷  🍄  🦋  🐞  🍒  🪻" data-boy="📖  🐻  🦕  ⭐  ☁️  🚀  🪐  🐢" aria-hidden="true"><span>📖  🐇  🌷  🍄  🦋</span></div>
 </section>
 
 <section class="view" id="settings">
@@ -142,7 +164,7 @@ html[data-theme="boy"] .page-stickers span{filter:drop-shadow(0 2px 2px #52799a1
  <div class="card"><strong>Little garden care</strong><p class="subtle">You can remove a session from History, or clear all app data below.</p><button class="btn ghost" onclick="clearAll()">Clear all data</button></div>
  <div class="card"><strong>About this app</strong><p class="subtle">Little Time Garden · Offline-friendly time and study tracker.</p><p class="tiny">Tip: use your browser's “Add to Home screen” option to install it like an app. For offline installation, it must be hosted over HTTPS.</p></div>
 
- <div class="page-stickers" data-girl="🧺  🌼  🎀  🐈  🌸" data-boy="🧸  🪐  🚀  ⭐  ☁️" aria-hidden="true"><span>🧺  🌼  🎀  🐈  🌸</span></div>
+ <div class="page-stickers" data-girl="🧺  🌼  🎀  🐈  🌸  🍓  🐇  🍄" data-boy="🧸  🪐  🚀  ⭐  ☁️  🦕  🛸  🪁" aria-hidden="true"><span>🧺  🌼  🎀  🐈  🌸</span></div>
 </section>
 </div>
 <nav class="nav"><div class="navinner">
@@ -163,7 +185,7 @@ function iso(d){let x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth
 function load(){try{const raw=localStorage.getItem(DB);if(raw)data={...data,...JSON.parse(raw)}}catch(e){}}
 function save(){localStorage.setItem(DB,JSON.stringify(data))}
 const THEME_KEY='little-time-garden-theme-v1';
-function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span>';document.querySelectorAll('.page-stickers').forEach(el=>{el.innerHTML='<span>'+(chosen==='boy'?el.dataset.boy:el.dataset.girl)+'</span>'});let sel=$('themeSelect');if(sel)sel.value=chosen}
+function setTheme(theme){let chosen=theme==='boy'?'boy':'girl';document.documentElement.dataset.theme=chosen;try{localStorage.setItem(THEME_KEY,chosen)}catch(e){}let row=$('stickerRow');if(row)row.innerHTML=chosen==='boy'?'<span>🧸</span><span>🚀</span><span>🦕</span><span>☁️</span><span>⭐</span><span>🛸</span><span>🪐</span>':'<span>🐈</span><span>🎀</span><span>🌷</span><span>🧁</span><span>🦋</span><span>🍓</span><span>🐇</span>';document.querySelectorAll('.page-stickers').forEach(el=>{el.innerHTML='<span>'+(chosen==='boy'?el.dataset.boy:el.dataset.girl)+'</span>'});let sel=$('themeSelect');if(sel)sel.value=chosen}
 function loadTheme(){let t='girl';try{t=localStorage.getItem(THEME_KEY)||'girl'}catch(e){}setTheme(t)}
 function fmt(ms){let m=Math.floor(ms/60000),h=Math.floor(m/60);return `${h}h ${String(m%60).padStart(2,'0')}m`}
 function clock(ms){let s=Math.floor(ms/1000);return [Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(v).padStart(2,'0')).join(':')}
